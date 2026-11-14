@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="OfferGuard 职途罗盘：用 AI Agent 看懂劳动合同里的隐藏风险，找到法规依据，再决定签不签。"
+    />
+    <meta name="theme-color" content="#f4efe4" />
+    <title>OfferGuard · 职途罗盘</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="page-noise" aria-hidden="true"></div>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="OfferGuard 首页">
+        <span class="brand-mark" aria-hidden="true">
+          <span></span>
+          <span></span>
+        </span>
+        <span class="brand-name">OfferGuard</span>
+        <span class="brand-cn">职途罗盘</span>
+      </a>
+      <nav class="site-nav" aria-label="主导航">
+        <a href="#workspace">风险体检</a>
+        <a href="#how-it-works">工作方式</a>
+        <a href="#trust">安全边界</a>
+      </nav>
+      <div class="header-meta">
+        <span class="model-pill" id="modelPill" role="status">
+          <i></i>
+          <span>正在连接 Agent</span>
+        </span>
+        <a class="text-link" href="https://github.com/dAm0825/Romanlegs" target="_blank" rel="noreferrer">
+          GitHub
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6" /></svg>
+        </a>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">
+            <span class="eyebrow-index">00</span>
+            AI-NATIVE 就业风险侦察
+          </p>
+          <h1>
+            签字之前，<br />
+            先看见<span class="highlight-word">代价</span>。
+          </h1>
+          <p class="hero-lede">
+            把 offer、劳动合同或实习协议交给 Agent。它会先保护隐私，再逐条寻找高影响条款、检索法规依据，最后交给你一份能行动的风险地图。
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#workspace">
+              开始风险体检
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 10 8 0m-3-3 3 3-3 3" /></svg>
+            </a>
+            <button class="button button-ghost" id="heroDemoButton" type="button">
+              <span class="play-icon" aria-hidden="true"></span>
+              用示例合同体验
+            </button>
+          </div>
+          <div class="hero-proof">
+            <div class="proof-avatars" aria-hidden="true">
+              <span>毕</span><span>研</span><span>职</span>
+            </div>
+            <p><strong>不做泛化问答</strong><br />只处理签约前最关键的一次判断</p>
+          </div>
+        </div>
+
+        <div class="hero-visual" aria-label="Agent 风险分析示意">
+          <div class="orbit orbit-one" aria-hidden="true"></div>
+          <div class="orbit orbit-two" aria-hidden="true"></div>
+          <div class="visual-card visual-contract">
+            <div class="visual-card-head">
+              <span class="file-icon">DOC</span>
+              <span>录用通知书.pdf</span>
+              <span class="visual-dot"></span>
+            </div>
+            <div class="fake-lines">
+              <i class="long"></i><i></i><i class="medium"></i><i class="marker"></i>
+              <i class="long"></i><i></i><i class="short"></i><i class="marker second"></i>
+              <i class="long"></i><i class="medium"></i>
+            </div>
+            <div class="scan-line" aria-hidden="true"></div>
+          </div>
+          <div class="visual-card visual-risk">
+            <div class="mini-gauge">
+              <span>86</span>
+              <small>/ 100</small>
+            </div>
+            <div>
+              <small>综合风险</small>
+              <strong>高风险</strong>
+            </div>
+          </div>
+          <div class="visual-card visual-evidence">
+            <span class="evidence-check">✓</span>
+            <div>
+              <small>已核验证据</small>
+              <strong>8 条 · 可追溯</strong>
+            </div>
+          </div>
+          <div class="visual-agent">
+            <span class="agent-core">
+              <svg viewBox="0 0 40 40" aria-hidden="true">
+                <path d="M20 7v9m0 8v9M7 20h9m8 0h9" />
+                <circle cx="20" cy="20" r="5" />
+              </svg>
+            </span>
+            <span>Agent 正在工作</span>
+          </div>
+          <span class="visual-label label-a">隐私屏障</span>
+          <span class="visual-label label-b">政策 RAG</span>
+          <span class="visual-label label-c">人工确认</span>
+        </div>
+      </section>
+
+      <section class="capability-strip" aria-label="产品能力">
+        <span class="strip-title">FROM TEXT TO DECISION</span>
+        <div class="capability-item">
+          <b>01</b>
+          <span>原文条款</span>
+        </div>
+        <div class="capability-item">
+          <b>02</b>
+          <span>政策证据</span>
+        </div>
+        <div class="capability-item">
+          <b>03</b>
+          <span>风险地图</span>
+        </div>
+        <div class="capability-item">
+          <b>04</b>
+          <span>你的决定</span>
+        </div>
+      </section>
+
+      <section class="workspace-section" id="workspace">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow"><span class="eyebrow-index">01</span> RISK SCAN</p>
+            <h2>一次签约前的<br /><em>可解释体检</em></h2>
+          </div>
+          <p class="section-intro">
+            直接粘贴文本，或上传 TXT / MD 文件。没有 API Key 也可以先运行完整的离线演示；连接 DeepSeek 后会生成更自然的解释和沟通建议。
+          </p>
+        </div>
+
+        <div class="workspace-grid">
+          <div class="input-panel">
+            <div class="panel-topline">
+              <span>输入你的 offer / 劳动合同</span>
+              <span class="privacy-inline">
+                <svg viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M4.5 7V5a3.5 3.5 0 0 1 7 0v2M3 7h10v6H3z" />
+                </svg>
+                本地先脱敏
+              </span>
+            </div>
+            <label class="sr-only" for="contractInput">合同文本</label>
+            <textarea
+              id="contractInput"
+              maxlength="60000"
+              placeholder="例如：首次签订一年期合同，试用期三个月；转正后缴纳社保；大小周，工作日延时工作不计加班……"
+            ></textarea>
+            <div class="input-toolbar">
+              <div class="toolbar-left">
+                <button class="icon-text-button" id="sampleButton" type="button">
+                  <svg viewBox="0 0 18 18" aria-hidden="true">
+                    <path d="M5 2.5h8v13H5zM7.5 6h3M7.5 9h3M7.5 12h2" />
+                  </svg>
+                  载入示例
+                </button>
+                <button class="icon-text-button" id="uploadButton" type="button">
+                  <svg viewBox="0 0 18 18" aria-hidden="true">
+                    <path d="M9 12V3m-3 3 3-3 3 3M3 11v4h12v-4" />
+                  </svg>
+                  上传文件
+                </button>
+                <input id="fileInput" type="file" accept=".txt,.md,text/plain,text/markdown" hidden />
+              </div>
+              <div class="toolbar-right">
+                <span id="charCount">0 字符</span>
+                <button class="clear-button" id="clearButton" type="button">清空</button>
+              </div>
+            </div>
+            <div class="input-foot">
+              <p>
+                <span class="pulse-dot"></span>
+                证件号、手机号、邮箱会在模型调用前被替换。
+              </p>
+              <button class="analyze-button" id="analyzeButton" type="button">
+                <span>开始风险侦察</span>
+                <svg viewBox="0 0 22 22" aria-hidden="true"><path d="m7 11 8 0m-3-3 3 3-3 3" /></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="agent-panel" id="agentPanel">
+            <div class="panel-topline">
+              <span>AGENT TRACE</span>
+              <span class="live-label"><i></i><span id="agentState">等待输入</span></span>
+            </div>
+            <div class="agent-empty" id="agentEmpty">
+              <div class="empty-orbit">
+                <span></span>
+                <i></i>
+                <b>OG</b>
+              </div>
+              <div>
+                <h3>准备开始侦察</h3>
+                <p>Agent 会把处理过程拆成六个可检查的步骤，而不是只给你一段无法核验的答案。</p>
+              </div>
+            </div>
+            <ol class="agent-steps" id="agentSteps" aria-live="polite">
+              <li data-step="pii_shield">
+                <span class="step-dot"></span>
+                <div><b>01 / 隐私屏障</b><p>识别并遮蔽常见个人标识</p></div>
+                <span class="step-time">—</span>
+              </li>
+              <li data-step="clause_scout">
+                <span class="step-dot"></span>
+                <div><b>02 / 条款侦察</b><p>定位高影响合同条款</p></div>
+                <span class="step-time">—</span>
+              </li>
+              <li data-step="policy_rag">
+                <span class="step-dot"></span>
+                <div><b>03 / 证据检索</b><p>从可信知识库召回法规</p></div>
+                <span class="step-time">—</span>
+              </li>
+              <li data-step="risk_engine">
+                <span class="step-dot"></span>
+                <div><b>04 / 风险计算</b><p>综合严重度与影响范围</p></div>
+                <span class="step-time">—</span>
+              </li>
+              <li data-step="action_planner">
+                <span class="step-dot"></span>
+                <div><b>05 / 行动规划</b><p>生成可执行的澄清清单</p></div>
+                <span class="step-time">—</span>
+              </li>
+              <li data-step="safety_reviewer">
+                <span class="step-dot"></span>
+                <div><b>06 / 安全复核</b><p>核验引用，守住人工边界</p></div>
+                <span class="step-time">—</span>
+              </li>
+            </ol>
+            <div class="agent-note">
+              <span>HUMAN IN THE LOOP</span>
+              <p>Agent 不会签署合同，也不会替你联系 HR。所有外部行动都由你确认。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="results-section" id="resultsSection" hidden>
+        <div class="results-heading">
+          <div>
+            <p class="eyebrow"><span class="eyebrow-index">02</span> FINDINGS</p>
+            <h2>风险不是一句结论，<br />而是一条证据链。</h2>
+          </div>
+          <div class="report-actions">
+            <button class="button button-small button-ghost" id="copyReportButton" type="button">
+              复制报告
+            </button>
+            <button class="button button-small button-ghost" id="downloadReportButton" type="button">
+              导出 Markdown
+            </button>
+          </div>
+        </div>
+
+        <div class="result-layout">
+          <aside class="risk-summary">
+            <div class="risk-top">
+              <span>RISK INDEX</span>
+              <span class="report-id" id="reportId">OG-000000</span>
+            </div>
+            <div class="risk-gauge" id="riskGauge" style="--score: 0">
+              <div class="risk-gauge-inner">
+                <strong id="riskScore">0</strong>
+                <span>/ 100</span>
+              </div>
+            </div>
+            <div class="risk-level" id="riskLevel">分析中</div>
+            <p class="risk-summary-text" id="summaryText"></p>
+            <div class="score-legend">
+              <span><i class="low"></i>需核对</span>
+              <span><i class="medium"></i>中风险</span>
+              <span><i class="high"></i>高风险</span>
+            </div>
+            <div class="provider-card">
+              <span>本次推理</span>
+              <strong id="providerName">Checking</strong>
+              <small id="traceDuration">—</small>
+            </div>
+            <p class="legal-note" id="disclaimerText"></p>
+          </aside>
+
+          <div class="findings-column">
+            <div class="findings-toolbar">
+              <div>
+                <strong id="findingCount">0 项发现</strong>
+                <span>点击展开原文与依据</span>
+              </div>
+              <div class="severity-filters" role="group" aria-label="筛选风险等级">
+                <button class="active" data-filter="all" type="button">全部</button>
+                <button data-filter="high" type="button">高影响</button>
+                <button data-filter="medium" type="button">需核对</button>
+              </div>
+            </div>
+            <div class="findings-list" id="findingsList"></div>
+          </div>
+        </div>
+
+        <div class="action-section">
+          <div class="action-intro">
+            <p class="eyebrow"><span class="eyebrow-index">03</span> ACTION PLAN</p>
+            <h2>把风险，<br />变成下一步。</h2>
+            <p>
+              请先逐项核对原文。勾选确认后，OfferGuard 才会把你的问题组织成一份可编辑的沟通草稿。
+            </p>
+            <label class="confirm-check">
+              <input type="checkbox" id="confirmCheckbox" />
+              <span class="custom-check"></span>
+              <span>我已打开合同原文，并核对上述条款</span>
+            </label>
+            <button class="button button-primary full-width" id="generateDraftButton" type="button" disabled>
+              生成沟通草稿
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 10 8 0m-3-3 3 3-3 3" /></svg>
+            </button>
+          </div>
+          <div class="action-list-card">
+            <div class="action-list-head">
+              <span>优先行动</span>
+              <span id="actionCount">0 ITEMS</span>
+            </div>
+            <ol class="action-list" id="actionList"></ol>
+          </div>
+          <div class="draft-card" id="draftCard" hidden>
+            <div class="draft-head">
+              <div>
+                <span>沟通草稿 · 仅供编辑</span>
+                <strong>先确认事实，再发出消息</strong>
+              </div>
+              <button class="copy-draft" id="copyDraftButton" type="button">复制草稿</button>
+            </div>
+            <label class="sr-only" for="draftText">沟通草稿</label>
+            <textarea id="draftText"></textarea>
+            <p>OfferGuard 不会自动发送此内容。请改成你自己的表达，并确认收件人后再使用。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="method-section" id="how-it-works">
+        <div class="method-heading">
+          <p class="eyebrow"><span class="eyebrow-index">04</span> HOW IT THINKS</p>
+          <h2>让 AI 负责发现，<br />让你保留决定权。</h2>
+        </div>
+        <div class="method-grid">
+          <article class="method-card method-green">
+            <span class="method-number">01</span>
+            <div class="method-symbol">
+              <svg viewBox="0 0 48 48" aria-hidden="true">
+                <circle cx="24" cy="24" r="14" />
+                <path d="M17 24h14M24 17v14" />
+              </svg>
+            </div>
+            <h3>规划先于生成</h3>
+            <p>DeepSeek Planner 先判断该查哪些风险主题、调用哪些工具，再把任务交给检索与合成环节。</p>
+            <span class="method-tag">AGENT / TOOL USE</span>
+          </article>
+          <article class="method-card method-light">
+            <span class="method-number">02</span>
+            <div class="method-symbol">
+              <svg viewBox="0 0 48 48" aria-hidden="true">
+                <path d="M10 15h28v23H10zM16 15V9h16v6M16 24h16M16 30h10" />
+              </svg>
+            </div>
+            <h3>依据必须可追溯</h3>
+            <p>每项发现都展示原文与知识库证据编号。引用会再次经过服务端校验，不在证据库中的引用会被移除。</p>
+            <span class="method-tag">GROUNDED RAG</span>
+          </article>
+          <article class="method-card method-coral">
+            <span class="method-number">03</span>
+            <div class="method-symbol">
+              <svg viewBox="0 0 48 48" aria-hidden="true">
+                <path d="M12 24 21 33 37 15" />
+                <circle cx="24" cy="24" r="19" />
+              </svg>
+            </div>
+            <h3>最后由你盖章</h3>
+            <p>系统只生成待编辑草稿。关键行动被确认门锁定，避免 AI 在不确定事实时替你做承诺。</p>
+            <span class="method-tag">HUMAN CONFIRMATION</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="trust-section" id="trust">
+        <div class="trust-panel">
+          <div class="trust-copy">
+            <p class="eyebrow"><span class="eyebrow-index">05</span> SAFETY BY DESIGN</p>
+            <h2>复杂问题，<br />克制作答。</h2>
+            <p>
+              OfferGuard 能帮助你发现问题、组织证据和准备沟通，但它不是律师事务所。高风险争议会被明确提示升级到学校就业部门、劳动保障监察部门或专业律师。
+            </p>
+          </div>
+          <div class="trust-list">
+            <div><span>01</span><p><strong>模型前脱敏</strong>个人标识不随原文发送给外部模型。</p></div>
+            <div><span>02</span><p><strong>证据白名单</strong>模型只能引用本次检索到的可信条目。</p></div>
+            <div><span>03</span><p><strong>原文复核</strong>发现项必须能在合同原文中找到对应句子。</p></div>
+            <div><span>04</span><p><strong>人工出口</strong>生成草稿不会自动发送，也不会自动签署。</p></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-brand">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span></span>
+        <div>
+          <strong>OfferGuard · 职途罗盘</strong>
+          <p>看见每一份 offer 的隐藏代价。</p>
+        </div>
+      </div>
+      <p>2026 传智杯 AI Web 网页开发挑战赛参赛项目 · 本站输出不构成正式法律意见</p>
+      <a href="#top">回到顶部 ↑</a>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="/js/app.js"></script>
+  </body>
+</html>
