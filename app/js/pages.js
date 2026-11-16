@@ -665,13 +665,55 @@
     setup() {
       const route = useRoute();
       const router = useRouter();
-      const report = computed(() => store.getReport(route.params.id));
+      const legacyKnowledgeLabels = {
+        "KB-BRUSH": "刷单返利",
+        "KB-AUTHORITY": "冒充公检法",
+        "KB-CUSTOMER": "冒充电商客服",
+        "KB-LOAN": "注销校园贷",
+        "KB-TICKET": "门票交易",
+        "KB-GAME": "游戏交易",
+        "KB-PART-TIME": "兼职招聘",
+        "KB-SCREEN": "高风险操作",
+        "KB-ACTION": "应急处置",
+        "KB-VERIFY": "官方核验",
+        "KB-INVEST": "虚假投资",
+        "KB-FRIEND": "冒充熟人",
+        "KB-REFUND": "教育培训退费",
+        "KB-AID": "奖助学金",
+        "KB-MERCH": "粉丝福利",
+      };
+      const rawReport = computed(() => store.getReport(route.params.id));
+      const localizeReportText = (value) =>
+        String(value || "")
+          .replace(/KB-[A-Z-]+/g, (code) => legacyKnowledgeLabels[code] || "风险知识")
+          .replace(/DeepSeek(?:\s*·\s*[a-z0-9-]+)?/gi, "智能模型")
+          .replace(/\bAI\b/gi, "人工智能");
+      const report = computed(() => {
+        const item = rawReport.value;
+        if (!item) return null;
+        return {
+          ...item,
+          summary: localizeReportText(item.summary),
+          explanation: localizeReportText(item.explanation),
+          actions: (item.actions || []).map(localizeReportText),
+          questions: (item.questions || []).map(localizeReportText),
+          report_markdown: localizeReportText(item.report_markdown),
+          evidence: (item.evidence || []).map((evidence) => ({
+            ...evidence,
+            id: legacyKnowledgeLabels[evidence.id] || evidence.id,
+          })),
+        };
+      });
       const activeTab = ref("overview");
       const openEvidence = ref("");
       const isCopied = ref(false);
 
       const scenarioId = computed(() => (report.value ? categoryScenario[report.value.category] || "part-time" : "part-time"));
       const tone = computed(() => (report.value ? scoreTone(report.value.score) : "safe"));
+      const providerLabel = computed(() => {
+        const provider = report.value?.provider || "";
+        return /模型|deepseek/i.test(provider) ? "智能模型辅助分析" : "本地规则与知识库";
+      });
 
       async function copyReport() {
         if (!report.value) return;
@@ -687,6 +729,7 @@
 
       return {
         report,
+        providerLabel,
         activeTab,
         openEvidence,
         tone,
@@ -699,7 +742,7 @@
       <section v-if="report" class="workspace-page report-page">
         <div class="report-head">
           <div>
-            <p class="eyebrow"><span>03</span>风险报告 / {{ report.id }}</p>
+            <p class="eyebrow"><span>03</span>风险报告</p>
             <h1>风险分析报告</h1>
           </div>
           <button class="secondary-button compact" type="button" @click="copyReport">
@@ -721,7 +764,7 @@
             </div>
             <div class="score-meta">
               <span>分析来源</span>
-              <strong>{{ report.provider }}</strong>
+              <strong>{{ providerLabel }}</strong>
             </div>
             <button class="practice-cta" type="button" @click="startPractice">
               用同类场景练一次
