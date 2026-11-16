@@ -13,7 +13,7 @@
     { path: "/challenge", name: "challenge", component: pages.ChallengePage, meta: { title: "每日挑战", requiresAuth: true } },
     { path: "/cases", name: "cases", component: pages.CasesPage, meta: { title: "真实案例" } },
     { path: "/dashboard", name: "dashboard", component: pages.DashboardPage, meta: { title: "成长记录", requiresAuth: true } },
-    { path: "/assistant", name: "assistant", component: pages.AssistantPage, meta: { title: "AI 助手" } },
+    { path: "/assistant", name: "assistant", component: pages.AssistantPage, meta: { title: "智能助手" } },
     { path: "/profile", name: "profile", component: pages.ProfilePage, meta: { title: "安全档案", requiresAuth: true } },
     { path: "/login", name: "login", component: pages.LoginPage, meta: { title: "登录" } },
     { path: "/:pathMatch(.*)*", redirect: "/" },
@@ -30,7 +30,7 @@
   });
 
   router.afterEach((to) => {
-    document.title = `${to.meta.title || "明辨"} · 明辨 AI 校园反诈陪练`;
+    document.title = `${to.meta.title || "明辨"} · 明辨校园反诈陪练`;
   });
 
   router.beforeEach((to) => {
@@ -47,7 +47,7 @@
     { label: "每日挑战", to: "/challenge", icon: "target" },
     { label: "真实案例", to: "/cases", icon: "news" },
     { label: "成长记录", to: "/dashboard", icon: "chart" },
-    { label: "AI 助手", to: "/assistant", icon: "spark" },
+    { label: "智能助手", to: "/assistant", icon: "spark" },
   ];
 
   const Icon = {
@@ -139,13 +139,12 @@
               <span class="brand-symbol"><i></i><i></i></span>
               <span class="brand-copy">
                 <strong>明辨</strong>
-                <small>MINGBIAN · ANTI-FRAUD LAB</small>
               </span>
             </router-link>
             <div class="top-actions">
               <span class="system-state" :class="modelState">
                 <i></i>
-                {{ modelState === 'online' ? 'DEEPSEEK ONLINE' : modelState === 'local' ? 'LOCAL MODE' : modelState === 'checking' ? 'CONNECTING' : 'OFFLINE' }}
+                {{ modelState === 'online' ? '智能模型已连接' : modelState === 'local' ? '本地模式' : modelState === 'checking' ? '正在连接' : '离线模式' }}
               </span>
               <button class="profile-button" type="button" @click="openProfile">
                 <span class="avatar">{{ initials }}</span>
@@ -194,7 +193,7 @@
             <span>识破一次，才能真正学会拒绝。</span>
           </div>
           <p>反诈识别不替代警方结论。如已转账或泄露信息，请立即联系银行并拨打 110。</p>
-          <span class="footer-code">2026 CHUANZHI CUP · AI WEB</span>
+          <span class="footer-code">2026 传智杯 · 网页开发挑战赛</span>
         </footer>
         <transition name="toast">
           <div v-if="store.state.toast.visible" class="toast" :class="store.state.toast.tone">

@@ -65,13 +65,13 @@
       <section class="home-page">
         <div class="home-hero">
           <div class="hero-text">
-            <p class="eyebrow"><span>01</span>AI-NATIVE ANTI-FRAUD TRAINING</p>
+            <p class="eyebrow"><span>01</span>反诈训练</p>
             <h1>
               先陪你<span>识破一次</span>，<br />
               再让你真正学会拒绝。
             </h1>
             <p class="hero-description">
-              明辨不是一份静态反诈手册。粘贴可疑消息，让 Agent 拆解套路；进入模拟对话，练习在压力下说“不”。
+              明辨不是一份静态反诈手册。粘贴可疑消息，让智能分析拆解套路；进入模拟对话，练习在压力下说“不”。
             </p>
             <div class="hero-cta">
               <router-link class="primary-button" to="/scan">
@@ -96,7 +96,7 @@
               <div class="terminal-head">
                 <span class="terminal-dot"></span>
                 <span>未知联系人</span>
-                <span class="terminal-risk">HIGH RISK</span>
+                <span class="terminal-risk">高风险</span>
               </div>
               <div class="terminal-message">
                 <p>系统显示你的账户被冻结。</p>
@@ -113,13 +113,13 @@
               </div>
             </div>
             <div class="risk-bubble">
-              <small>IDENTIFIED</small>
+              <small>已识别</small>
               <strong>刷单返利</strong>
               <span>96 / 100</span>
             </div>
             <div class="trace-bubble">
               <app-icon name="spark" />
-              <span>AI Agent 正在核对证据</span>
+              <span>智能分析正在核对证据</span>
             </div>
           </div>
         </div>
@@ -137,7 +137,7 @@
 
         <section class="feature-section">
           <div class="section-title">
-            <p class="eyebrow"><span>02</span>CORE MODULES</p>
+            <p class="eyebrow"><span>02</span>核心模块</p>
             <h2>把“别转账”变成<br/>真正可练习的能力。</h2>
           </div>
           <div class="feature-grid">
@@ -152,7 +152,7 @@
               <span class="feature-index">02</span>
               <div class="feature-icon"><app-icon name="shield"/></div>
               <h3>压力对话演练</h3>
-              <p>AI 扮演兼职招聘者、假客服或假老师，陪你练习拒绝、核验和止损。</p>
+              <p>智能模型扮演兼职招聘者、假客服或假老师，陪你练习拒绝、核验和止损。</p>
               <span class="feature-link">进入演练场 <app-icon name="arrow"/></span>
             </router-link>
             <router-link class="feature-card feature-cases" to="/cases">
@@ -241,7 +241,7 @@
       <section class="workspace-page scan-page">
         <page-head
           index="02"
-          eyebrow="MESSAGE CHECK"
+          eyebrow="可疑消息检测"
           title="这条消息，哪里不对劲？"
           description="粘贴聊天记录、短信或招聘信息。明辨会先保护个人标识，再拆解话术、检索依据并给出下一步。"
         />
@@ -249,7 +249,7 @@
           <div class="composer-card">
             <div class="card-label">
               <span>可疑消息</span>
-              <span class="privacy-badge">LOCAL REDACTION</span>
+              <span class="privacy-badge">本地脱敏</span>
             </div>
             <div class="sample-tabs">
               <button
@@ -280,7 +280,7 @@
 
           <aside class="scan-aside">
             <div class="aside-head">
-              <span>AGENT TRACE</span>
+              <span>分析过程</span>
               <i :class="{ live: loading }"></i>
             </div>
             <ol class="scan-stages">
@@ -339,7 +339,7 @@
       <section v-if="report" class="workspace-page report-page">
         <div class="report-head">
           <div>
-            <p class="eyebrow"><span>03</span>RISK REPORT / {{ report.id }}</p>
+            <p class="eyebrow"><span>03</span>风险报告 / {{ report.id }}</p>
             <h1>把风险看懂，<br/>再决定怎么处理。</h1>
           </div>
           <button class="secondary-button compact" type="button" @click="copyReport">
@@ -349,7 +349,7 @@
 
         <div class="report-layout">
           <aside class="score-panel" :class="tone">
-            <span class="panel-index">RISK INDEX</span>
+            <span class="panel-index">风险指数</span>
             <div class="score-ring" :style="{ '--score': report.score }">
               <div><strong>{{ report.score }}</strong><span>/100</span></div>
             </div>
@@ -425,7 +425,7 @@
 
             <div v-if="activeTab === 'action'" class="tab-panel">
               <div class="action-headline">
-                <span>STOP · VERIFY · SAVE EVIDENCE</span>
+                <span>停止 · 核验 · 保存证据</span>
                 <h2>先停下来，再按顺序处理。</h2>
               </div>
               <ol class="action-plan">
@@ -443,7 +443,7 @@
         </div>
       </section>
       <section v-else class="missing-state">
-        <span>404 / REPORT</span>
+        <span>报告未找到</span>
         <h1>这份报告不在当前浏览器里。</h1>
         <p>本地报告只保存在当前浏览器，或者链接已经过期。</p>
         <router-link class="primary-button" to="/scan">重新检测 <app-icon name="arrow"/></router-link>
@@ -476,11 +476,11 @@
       <section class="workspace-page cases-page">
         <header class="cases-header">
           <div>
-            <p class="eyebrow"><span>04</span>REAL CASE ARCHIVE</p>
+            <p class="eyebrow"><span>04</span>真实案例档案</p>
             <h1>真实发生过的，<br/>比假设更有说服力。</h1>
           </div>
           <div class="cases-intro">
-            <span>PUBLIC NEWS ONLY</span>
+            <span>仅收录公开新闻</span>
             <p>以下案例来自公开新闻和警方通报。点击任意卡片可前往原文，摘要仅用于风险教育。</p>
           </div>
         </header>
@@ -632,7 +632,7 @@
       <section class="workspace-page practice-page">
         <div class="practice-top">
           <div>
-            <p class="eyebrow"><span>05</span>PRESSURE SIMULATION</p>
+            <p class="eyebrow"><span>05</span>情景压力演练</p>
             <h1>在对话里，<br/>练会说“不”。</h1>
           </div>
           <div class="safety-score">
@@ -663,7 +663,7 @@
 
           <div class="chat-panel">
             <div class="chat-head">
-              <div><span class="role-avatar">骗</span><div><strong>模拟对话对象</strong><small>AI 角色扮演 · 请保持警觉</small></div></div>
+              <div><span class="role-avatar">骗</span><div><strong>模拟对话对象</strong><small>智能角色扮演 · 请保持警觉</small></div></div>
               <button type="button" @click="start">重新开始</button>
             </div>
             <div ref="chatRef" class="chat-stream">
@@ -767,7 +767,7 @@
       <section class="workspace-page dashboard-page">
         <page-head
           index="06"
-          eyebrow="PERSONAL GROWTH"
+          eyebrow="个人成长"
           title="不是记住口号，而是看见自己的进步。"
           description="这里只保存当前浏览器里的检测摘要与演练记录，不保存你粘贴的完整聊天原文。"
         />
@@ -839,7 +839,7 @@
       const messages = ref([
         {
           role: "assistant",
-          content: "我是明辨 AI 助手。你可以告诉我对方自称什么、要求你做什么，我会先帮你判断危险点，再给出核验和止损步骤。",
+          content: "我是明辨智能助手。你可以告诉我对方自称什么、要求你做什么，我会先帮你判断危险点，再给出核验和止损步骤。",
         },
       ]);
       const input = ref("");
@@ -889,7 +889,7 @@
       <section class="assistant-page">
         <div class="assistant-shell">
           <aside class="assistant-intro">
-            <p class="eyebrow"><span>07</span>AI SAFETY COPILOT</p>
+            <p class="eyebrow"><span>07</span>智能安全助手</p>
             <h1>不确定时，<br/>先问明辨。</h1>
             <p>不查你的真实账户，不索要密码。只根据官方知识和公开案例，帮你判断下一步。</p>
             <div class="assistant-boundaries">
@@ -900,8 +900,8 @@
           </aside>
           <div class="assistant-chat">
             <div class="assistant-chat-head">
-              <div><span class="ai-avatar"><app-icon name="spark"/></span><div><strong>明辨 AI 助手</strong><small>RAG 知识库 · 公开案例 · 安全边界</small></div></div>
-              <span class="online-dot">ONLINE</span>
+              <div><span class="ai-avatar"><app-icon name="spark"/></span><div><strong>明辨智能助手</strong><small>检索知识库 · 公开案例 · 安全边界</small></div></div>
+              <span class="online-dot">在线</span>
             </div>
             <div ref="streamRef" class="assistant-stream">
               <article v-for="(message, index) in messages" :key="index" class="assistant-message" :class="message.role">
@@ -929,7 +929,7 @@
               <textarea v-model="input" placeholder="描述你遇到的情况，不要输入真实验证码或密码……" @keydown.enter.exact.prevent="ask()"></textarea>
               <button type="button" :disabled="!input.trim() || loading" @click="ask()">发送 <app-icon name="arrow"/></button>
             </div>
-            <p class="assistant-disclaimer">AI 输出仅作风险教育。如已转账或持续受到威胁，请立即联系银行并拨打 110。</p>
+            <p class="assistant-disclaimer">模型输出仅作风险教育。如已转账或持续受到威胁，请立即联系银行并拨打 110。</p>
           </div>
         </div>
       </section>
@@ -1003,15 +1003,15 @@
         <div class="login-visual">
           <router-link class="login-brand" to="/">
             <span class="brand-symbol"><i></i><i></i></span>
-            <span><b>明辨</b><small>MINGBIAN ANTI-FRAUD LAB</small></span>
+            <span><b>明辨</b></span>
           </router-link>
           <div class="login-copy">
-            <p class="eyebrow"><span>09</span>YOUR SAFETY ACCOUNT</p>
+            <p class="eyebrow"><span>09</span>账户与训练档案</p>
             <h1>把每次警觉，<br/>留在自己的成长档案里。</h1>
             <p>登录后可保存检测报告、每日挑战成绩和情景演练记录。账户与数据仅保存在当前浏览器。</p>
           </div>
           <div class="login-orbit" aria-hidden="true">
-            <span>STOP</span><span>VERIFY</span><span>SAVE</span>
+            <span>停止</span><span>核验</span><span>保存
             <i></i><i></i><i></i>
           </div>
         </div>
@@ -1029,7 +1029,7 @@
               <button type="button" :class="{ active: mode === 'register' }" @click="switchMode('register')">创建账户</button>
             </div>
             <div class="login-heading">
-              <span>{{ mode === 'login' ? 'WELCOME BACK' : 'CREATE YOUR PROFILE' }}</span>
+              <span>{{ mode === 'login' ? '欢迎回来' : '创建账户' }}</span>
               <h2>{{ mode === 'login' ? '继续你的防骗训练。' : '建立你的本地安全档案。' }}</h2>
               <p>{{ mode === 'login' ? '使用当前浏览器注册的账户继续。' : '无需手机号，不会上传真实身份信息。' }}</p>
             </div>
@@ -1066,7 +1066,7 @@
             </form>
             <div class="login-divider"><span>或者</span></div>
             <button class="guest-login" type="button" @click="enterGuest">使用本地体验账户</button>
-            <p class="login-privacy">密码会加盐哈希后保存在 localStorage；明辨不会将其发送到服务器。</p>
+            <p class="login-privacy">密码会加盐哈希后保存在当前浏览器；明辨不会将其发送到服务器。</p>
           </template>
         </div>
       </section>
@@ -1146,7 +1146,7 @@
       <section class="workspace-page academy-page">
         <page-head
           index="10"
-          eyebrow="KNOWLEDGE LAB"
+          eyebrow="知识训练"
           title="先看懂套路，再进入压力练习。"
           description="六个短课覆盖校园最高频的反诈主题。每个模块只讲关键判断，不堆成长篇宣传文章。"
         />
@@ -1171,7 +1171,7 @@
           </div>
           <article class="course-detail">
             <div class="course-detail-head">
-              <span>LESSON / {{ selected.code }}</span>
+              <span>第 {{ selected.code }} 课</span>
               <strong>{{ selected.title }}</strong>
               <p>{{ selected.summary }}</p>
             </div>
@@ -1273,7 +1273,7 @@
       <section class="workspace-page challenge-page">
         <page-head
           index="11"
-          eyebrow="DAILY CHALLENGE"
+          eyebrow="每日安全挑战"
           title="八道题，检查你的反诈反射。"
           description="每题都来自真实高发套路。完成后查看逐题解释，并把成绩保存在成长记录中。"
         />
@@ -1281,7 +1281,7 @@
         <div v-else-if="error" class="challenge-error">{{ error }} <button type="button" @click="load">重新加载</button></div>
         <div v-else-if="result" class="challenge-result">
           <div class="result-score">
-            <span>CHALLENGE SCORE</span>
+            <span>挑战得分</span>
             <strong>{{ result.score }}</strong>
             <small>{{ result.correct }} / {{ result.total }} 正确</small>
             <b>{{ result.level }}</b>
@@ -1299,7 +1299,7 @@
         </div>
         <div v-else class="challenge-layout">
           <aside class="challenge-rail">
-            <span>QUESTION</span>
+            <span>题目</span>
             <strong>{{ String(currentIndex + 1).padStart(2, '0') }}</strong>
             <small>/ {{ String(questions.length).padStart(2, '0') }}</small>
             <div class="challenge-progress"><i :style="{ height: progress + '%' }"></i></div>
@@ -1353,7 +1353,7 @@
       <section class="workspace-page profile-page">
         <page-head
           index="08"
-          eyebrow="SAFETY PROFILE"
+          eyebrow="安全档案"
           title="先说清楚，你常遇到什么。"
           description="安全档案只保存在本机，用于调整检测和演练的侧重点，不需要填写手机号、身份证或真实账户。"
         />

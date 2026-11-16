@@ -92,7 +92,7 @@ class SafetyCopilot:
                 source_ids = result.get("source_ids", [])
                 allowed = {item["id"] for item in evidence + cases}
                 evidence = [item for item in evidence if item["id"] in source_ids] or evidence
-                provider = f"DeepSeek · {self.client.model}"
+                provider = "智能模型"
             except ModelUnavailable:
                 pass
         return {
@@ -142,7 +142,7 @@ class SafetyCopilot:
                             "safer_reply": str(result.get("safer_reply") or fallback["safer_reply"])[:300],
                         }
                     )
-                    provider = f"DeepSeek · {self.client.model}"
+                    provider = "智能模型"
             except (ModelUnavailable, TypeError, ValueError):
                 pass
         fallback["risk_delta"] = self._guarded_delta(latest, fallback["risk_delta"])

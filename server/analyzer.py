@@ -162,7 +162,7 @@ class FraudAnalyzer:
                 generated = self._ask_model(clean, score, category, sentences, critical_hits, evidence)
                 merged = self._merge_model(generated, fallback, {doc["id"] for doc in evidence})
                 fallback.update(merged)
-                provider = f"DeepSeek · {self.client.model}"
+                provider = "智能模型"
             except ModelUnavailable as exc:
                 model_error = str(exc)
 
