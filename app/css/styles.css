@@ -460,16 +460,19 @@ svg {
 }
 
 .home-hero {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   width: min(980px, calc(100% - 96px));
-  min-height: 470px;
+  min-height: 560px;
   margin: 0 auto;
-  padding: 78px 0 64px;
+  padding: 118px 0 82px;
   text-align: center;
 }
 
 .hero-text {
   max-width: 860px;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -4163,7 +4166,8 @@ svg {
   .home-hero {
     width: calc(100% - 36px);
     min-height: 0;
-    padding-top: 45px;
+    padding-top: 62px;
+    padding-bottom: 52px;
   }
 
   .hero-text h1 {
