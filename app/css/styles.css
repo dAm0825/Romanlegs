@@ -6272,18 +6272,31 @@ body {
 
 .radar-actions {
   display: flex;
-  gap: 6px;
-  margin-top: 9px;
+  gap: 8px;
+  margin-top: 12px;
 }
 
 .radar-actions a {
-  padding: 4px 7px;
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 11px;
   border: 1px solid rgba(47, 120, 152, 0.17);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.44);
   color: #286b88;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
+  white-space: nowrap;
+  transition: background 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.radar-actions a:hover {
+  background: rgba(255, 255, 255, 0.76);
+  box-shadow: 0 6px 16px rgba(47, 120, 152, 0.12);
+  transform: translateY(-1px);
 }
 
 .radar-actions a:last-child {
@@ -7361,6 +7374,16 @@ body {
 
   .heat-list {
     grid-template-columns: 1fr;
+  }
+
+  .radar-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .radar-actions a {
+    width: 100%;
+    min-height: 36px;
   }
 
   .practice-call-head {
