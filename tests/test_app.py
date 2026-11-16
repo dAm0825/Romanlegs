@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 
 from server.analyzer import FraudAnalyzer
-from server.assistant import SafetyCopilot
+from server.assistant import SCENARIOS, SafetyCopilot
 from server.challenges import ChallengeEngine
 from server.safety import redact_sensitive
 
@@ -38,6 +38,18 @@ class DetectionTests(unittest.TestCase):
         result = self.analyzer.analyze("演唱会门票私下转让，付款后说账户冻结，让我继续转账。")
         self.assertTrue(result["related_cases"])
         self.assertTrue(all(case["url"].startswith("http") for case in result["related_cases"]))
+
+    def test_competition_content_has_at_least_ten_items_per_module(self):
+        self.assertGreaterEqual(len(self.analyzer.rag.cases), 10)
+        self.assertGreaterEqual(len({item["category"] for item in self.analyzer.rag.documents}), 10)
+        self.assertGreaterEqual(len(SCENARIOS), 10)
+        self.assertGreaterEqual(len(ChallengeEngine(ROOT).questions), 10)
+
+    def test_investment_message_is_detected(self):
+        result = self.analyzer.analyze(
+            "投资顾问说有内部消息，下载软件后每天稳赚，充值后仍然无法提现。"
+        )
+        self.assertEqual(result["category"], "虚假投资理财")
 
     def test_sensitive_data_is_redacted(self):
         clean, found = redact_sensitive("电话13800138000，邮箱a@example.com，证件110101200001010012")

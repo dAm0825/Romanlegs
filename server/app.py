@@ -11,13 +11,13 @@ from urllib.parse import unquote, urlparse
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
     from server.analyzer import FraudAnalyzer
-    from server.assistant import SafetyCopilot
+    from server.assistant import SCENARIOS, SafetyCopilot
     from server.challenges import ChallengeEngine
     from server.config import ROOT, get_config
     from server.safety import sanitize_chat_history
 else:
     from .analyzer import FraudAnalyzer
-    from .assistant import SafetyCopilot
+    from .assistant import SCENARIOS, SafetyCopilot
     from .challenges import ChallengeEngine
     from .config import ROOT, get_config
     from .safety import sanitize_chat_history
@@ -77,9 +77,16 @@ class MingBianHandler(SimpleHTTPRequestHandler):
         if path == "/api/news":
             self._json({"cases": ANALYZER.rag.cases})
             return
+        if path == "/api/stats":
+            self._json(
+                {
+                    "cases": len(ANALYZER.rag.cases),
+                    "knowledge_types": len({item["category"] for item in ANALYZER.rag.documents}),
+                    "scenarios": len(SCENARIOS),
+                }
+            )
+            return
         if path == "/api/scenarios":
-            from server.assistant import SCENARIOS
-
             self._json({"scenarios": [{"id": key, **value} for key, value in SCENARIOS.items()]})
             return
         if path == "/api/challenges":
