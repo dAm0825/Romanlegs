@@ -1,2 +1,0 @@
-"""OfferGuard server package."""
-
