@@ -1262,7 +1262,13 @@
                 <p>{{ option }}</p>
               </button>
             </div>
-            <button class="challenge-next" type="button" :disabled="selected === null || submitting" @click="next">
+            <button
+              class="challenge-next"
+              :class="{ ready: selected !== null && selected !== undefined && !submitting }"
+              type="button"
+              :disabled="selected === null || selected === undefined || submitting"
+              @click="next"
+            >
               {{ currentIndex === questions.length - 1 ? (submitting ? '正在评分' : '提交答卷') : '下一题' }}
               <app-icon name="arrow"/>
             </button>

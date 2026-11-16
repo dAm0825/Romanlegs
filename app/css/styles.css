@@ -3854,16 +3854,34 @@ svg {
   padding: 0 15px;
   border: 0;
   border-radius: 9px;
-  background: var(--night);
-  color: white;
+  border: 1px solid rgba(37, 99, 125, 0.14);
+  background: #d3e1e8;
+  color: #6d838d;
   cursor: pointer;
   font-size: 9px;
   font-weight: 700;
+  transition:
+    background 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
 }
 
 .challenge-next:disabled {
   cursor: not-allowed;
-  opacity: 0.4;
+  opacity: 1;
+}
+
+.challenge-next.ready {
+  border-color: #67b5d3;
+  background: #9bd8ed;
+  color: #153845;
+  box-shadow: 0 8px 22px rgba(60, 145, 177, 0.2);
+}
+
+.challenge-next.ready:hover {
+  background: #82cbE4;
+  transform: translateY(-1px);
 }
 
 .challenge-next svg {
