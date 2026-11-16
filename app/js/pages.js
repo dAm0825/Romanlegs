@@ -16,7 +16,7 @@
           <p class="eyebrow"><span>{{ index }}</span>{{ eyebrow }}</p>
           <h1>{{ title }}</h1>
         </div>
-        <p class="page-description">{{ description }}</p>
+        <p v-if="description" class="page-description">{{ description }}</p>
       </header>
     `,
   };
@@ -1287,12 +1287,15 @@
           index="06"
           eyebrow="个人成长"
           title="不是记住口号，而是看见自己的进步。"
-          description="这里只保存当前浏览器里的检测摘要与演练记录，不保存你粘贴的完整聊天原文。"
         />
 
         <section class="growth-hero">
           <div class="growth-hero-copy">
-            <p class="eyebrow"><span>训练总览</span>你的安全能力正在积累</p>
+            <p class="eyebrow growth-eyebrow">
+              <span>成长</span>
+              <b>训练总览</b>
+              <em>你的安全能力正在积累</em>
+            </p>
             <h2>{{ readinessLabel }}</h2>
             <p>每一次检测、演练和挑战都会转化为可回顾的训练轨迹。保持警觉，让正确反应成为习惯。</p>
             <div class="growth-chips">
@@ -1773,14 +1776,13 @@
               :class="{ active: selectedId === course.id, learned: learned.includes(course.id) }"
               @click="selectCourse(course.id)"
             >
-              <span>{{ course.code }}</span>
               <div><strong>{{ course.title }}</strong><small>{{ course.summary }}</small></div>
               <b>{{ learned.includes(course.id) ? '已掌握' : '→' }}</b>
             </button>
           </div>
           <article class="course-detail">
             <div class="course-detail-head">
-              <span>第 {{ selected.code }} 课</span>
+              <span>第 {{ courses.findIndex(item => item.id === selectedId) + 1 }} 课</span>
               <strong>{{ selected.title }}</strong>
               <p>{{ selected.summary }}</p>
             </div>
