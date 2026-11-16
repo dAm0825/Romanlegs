@@ -93,6 +93,51 @@
     setup() {
       const profile = computed(() => store.state.profile);
       const activeIntel = ref(0);
+      const activeRadar = ref(0);
+      const intelPaused = ref(false);
+      const radarCases = ref([]);
+      const radarDefinitions = [
+        {
+          name: "刷单返利",
+          short: "垫付与连单",
+          categories: ["刷单返利", "虚假招聘"],
+          caseCategory: "刷单返利",
+          detail: "先用小额返利建立信任，再以连单、冻结和提现失败为由持续索款。",
+          signal: "最容易忽略：第一笔真的返钱了。",
+          scenario: "part-time",
+          position: "signal-one",
+        },
+        {
+          name: "屏幕共享",
+          short: "验证码与隐私",
+          categories: ["冒充电商客服", "注销校园贷"],
+          caseCategory: "冒充电商客服",
+          detail: "假客服以退款或注销账户为名，要求共享屏幕并实时读取验证码和支付页面。",
+          signal: "关键红线：正规退款不需要远程控制手机。",
+          scenario: "customer",
+          position: "signal-two",
+        },
+        {
+          name: "身份冒充",
+          short: "公检法与熟人",
+          categories: ["冒充公检法", "冒充熟人"],
+          caseCategory: "冒充公检法",
+          detail: "伪造警官证、熟人账号或老师身份，用恐惧和紧急感阻止你向外界核验。",
+          signal: "关键判断：越要求保密，越要独立核实。",
+          scenario: "authority",
+          position: "signal-three",
+        },
+        {
+          name: "虚假投资",
+          short: "收益截图诱惑",
+          categories: ["虚假投资理财"],
+          caseCategory: "虚假投资理财",
+          detail: "用内部名额、稳定收益和虚假盈利截图诱导下载陌生软件，再阻止正常提现。",
+          signal: "关键红线：先充值才能提现，就是危险信号。",
+          scenario: "investment",
+          position: "signal-four",
+        },
+      ];
       const intelItems = [
         {
           tag: "刷单返利",
@@ -130,10 +175,26 @@
         knowledge_types: 15,
         scenarios: 10,
       });
+      const radarSignals = computed(() =>
+        radarDefinitions.map((item) => ({
+          ...item,
+          caseCount: radarCases.value.filter((caseItem) => item.categories.includes(caseItem.category)).length,
+        })),
+      );
+      const activeRadarSignal = computed(() => radarSignals.value[activeRadar.value] || radarSignals.value[0]);
+
+      function selectRadar(index) {
+        activeRadar.value = index;
+        activeIntel.value = index;
+        intelPaused.value = true;
+      }
+
       let intelTimer;
       onMounted(async () => {
         intelTimer = window.setInterval(() => {
-          activeIntel.value = (activeIntel.value + 1) % intelItems.length;
+          if (!intelPaused.value) {
+            activeIntel.value = (activeIntel.value + 1) % intelItems.length;
+          }
         }, 4200);
         try {
           const data = await store.api("/api/stats");
@@ -141,9 +202,25 @@
         } catch {
           // The bundled counts remain available if the stats request fails.
         }
+        try {
+          const data = await store.api("/api/news");
+          radarCases.value = data.cases;
+        } catch {
+          radarCases.value = [];
+        }
       });
       onUnmounted(() => window.clearInterval(intelTimer));
-      return { profile, stats, activeIntel, intelItems, heatItems };
+      return {
+        profile,
+        stats,
+        activeIntel,
+        intelItems,
+        heatItems,
+        activeRadar,
+        radarSignals,
+        activeRadarSignal,
+        selectRadar,
+      };
     },
     template: `
       <section class="home-page">
@@ -180,24 +257,51 @@
             <article class="radar-intel-card">
               <div class="intel-card-title">
                 <div><span>风险信号</span><strong>校园诈骗雷达</strong></div>
-                <b>训练模型</b>
+                <b>点击可交互</b>
               </div>
-              <div class="radar-visual" aria-hidden="true">
-                <span class="radar-ring ring-one"></span>
-                <span class="radar-ring ring-two"></span>
-                <span class="radar-ring ring-three"></span>
-                <span class="radar-axis axis-x"></span>
-                <span class="radar-axis axis-y"></span>
-                <span class="radar-sweep"></span>
-                <i class="radar-dot dot-one"></i>
-                <i class="radar-dot dot-two"></i>
-                <i class="radar-dot dot-three"></i>
-                <em>正在扫描高频话术</em>
+              <div class="radar-main">
+                <div class="radar-visual">
+                  <span class="radar-ring ring-one"></span>
+                  <span class="radar-ring ring-two"></span>
+                  <span class="radar-ring ring-three"></span>
+                  <span class="radar-axis axis-x"></span>
+                  <span class="radar-axis axis-y"></span>
+                  <span class="radar-sweep"></span>
+                  <button
+                    v-for="(signal, index) in radarSignals"
+                    :key="signal.name"
+                    type="button"
+                    class="radar-dot"
+                    :class="[signal.position, { active: activeRadar === index }]"
+                    :aria-label="'查看' + signal.name + '风险'"
+                    :title="signal.name"
+                    @click="selectRadar(index)"
+                  ><span></span></button>
+                  <em>{{ activeRadarSignal.short }}</em>
+                </div>
+                <div class="radar-readout">
+                  <span>当前风险点</span>
+                  <strong>{{ activeRadarSignal.name }}</strong>
+                  <p>{{ activeRadarSignal.detail }}</p>
+                  <div class="radar-case-count">
+                    <b>{{ activeRadarSignal.caseCount }}</b>
+                    <span>条相关公开案例</span>
+                  </div>
+                  <small>{{ activeRadarSignal.signal }}</small>
+                  <div class="radar-actions">
+                    <router-link :to="{ path: '/cases', query: { category: activeRadarSignal.caseCategory } }">查看案例</router-link>
+                    <router-link :to="{ path: '/practice', query: { scenario: activeRadarSignal.scenario } }">练一次</router-link>
+                  </div>
+                </div>
               </div>
               <div class="radar-footer">
-                <span><i></i>资金诱导</span>
-                <span><i></i>身份冒充</span>
-                <span><i></i>隐私索取</span>
+                <button
+                  v-for="(signal, index) in radarSignals"
+                  :key="signal.name"
+                  type="button"
+                  :class="{ active: activeRadar === index }"
+                  @click="selectRadar(index)"
+                ><i></i>{{ signal.name }}</button>
               </div>
             </article>
 
@@ -709,9 +813,10 @@
 
   const CasesPage = {
     setup() {
+      const route = useRoute();
       const cases = ref([]);
       const loading = ref(true);
-      const active = ref("全部");
+      const active = ref(typeof route.query.category === "string" ? route.query.category : "全部");
       const categories = computed(() => ["全部", ...new Set(cases.value.map((item) => item.category))]);
       const filtered = computed(() => (active.value === "全部" ? cases.value : cases.value.filter((item) => item.category === active.value)));
 
@@ -719,6 +824,9 @@
         try {
           const data = await store.api("/api/news");
           cases.value = data.cases;
+          if (active.value !== "全部" && !cases.value.some((item) => item.category === active.value)) {
+            active.value = "全部";
+          }
         } catch (err) {
           store.showToast(err.message, "error");
         } finally {

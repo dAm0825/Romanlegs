@@ -6052,11 +6052,19 @@ body {
   font-weight: 600;
 }
 
+.radar-main {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  align-items: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
 .radar-visual {
   position: relative;
-  width: 188px;
-  height: 188px;
-  margin: -4px auto -8px;
+  width: 160px;
+  height: 160px;
+  margin: 0;
   border: 1px solid rgba(45, 113, 143, 0.15);
   border-radius: 50%;
   background:
@@ -6111,37 +6119,67 @@ body {
 
 .radar-dot {
   position: absolute;
-  width: 9px;
-  height: 9px;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
   border: 2px solid white;
   border-radius: 50%;
   background: var(--orange);
+  cursor: pointer;
   box-shadow: 0 0 0 5px rgba(240, 108, 67, 0.16);
+  transition: transform 180ms ease, box-shadow 180ms ease;
 }
 
-.dot-one {
-  top: 46px;
-  left: 64px;
+.radar-dot > span {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: white;
 }
 
-.dot-two {
-  top: 91px;
-  right: 35px;
+.radar-dot:hover,
+.radar-dot.active {
+  z-index: 6;
+  transform: scale(1.32);
+  box-shadow: 0 0 0 7px rgba(240, 108, 67, 0.16);
+}
+
+.signal-one {
+  top: 32px;
+  left: 43px;
+}
+
+.signal-two {
+  top: 77px;
+  right: 17px;
   background: #3d8eab;
   box-shadow: 0 0 0 5px rgba(61, 142, 171, 0.14);
 }
 
-.dot-three {
-  bottom: 35px;
-  left: 49px;
+.signal-three {
+  bottom: 24px;
+  left: 31px;
   background: #68a991;
   box-shadow: 0 0 0 5px rgba(104, 169, 145, 0.14);
 }
 
+.signal-four {
+  top: 87px;
+  left: 19px;
+  width: 13px;
+  height: 13px;
+  background: #d49d43;
+  box-shadow: 0 0 0 5px rgba(212, 157, 67, 0.15);
+}
+
 .radar-visual em {
   position: absolute;
-  right: 0;
-  bottom: 28px;
+  z-index: 7;
+  right: -4px;
+  bottom: 8px;
   padding: 4px 7px;
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.8);
@@ -6151,18 +6189,101 @@ body {
   box-shadow: 0 5px 16px rgba(45, 110, 136, 0.1);
 }
 
-.radar-footer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px 13px;
-  color: #4e7080;
-  font-size: 10px;
+.radar-readout {
+  min-width: 0;
 }
 
-.radar-footer span {
+.radar-readout > span,
+.radar-readout > strong,
+.radar-readout > small {
+  display: block;
+}
+
+.radar-readout > span {
+  color: #2f7898;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.radar-readout > strong {
+  margin: 2px 0 7px;
+  font-size: 19px;
+}
+
+.radar-readout > p {
+  margin: 0;
+  color: #526f7c;
+  font-size: 10px;
+  line-height: 1.65;
+}
+
+.radar-case-count {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 9px 0 4px;
+}
+
+.radar-case-count b {
+  color: #b6543a;
+  font-size: 23px;
+  line-height: 1;
+}
+
+.radar-case-count span {
+  color: #627d89;
+  font-size: 9px;
+}
+
+.radar-readout > small {
+  color: #2e6f88;
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.radar-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 9px;
+}
+
+.radar-actions a {
+  padding: 4px 7px;
+  border: 1px solid rgba(47, 120, 152, 0.17);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.44);
+  color: #286b88;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.radar-actions a:last-child {
+  border-color: #2f7898;
+  background: #2f7898;
+  color: white;
+}
+
+.radar-footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 10px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(45, 113, 143, 0.11);
+  color: #4e7080;
+  font-size: 9px;
+}
+
+.radar-footer button {
   display: flex;
   align-items: center;
   gap: 5px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
 }
 
 .radar-footer i {
@@ -6172,12 +6293,21 @@ body {
   background: var(--orange);
 }
 
-.radar-footer span:nth-child(2) i {
+.radar-footer button:nth-child(2) i {
   background: #3d8eab;
 }
 
-.radar-footer span:nth-child(3) i {
+.radar-footer button:nth-child(3) i {
   background: #68a991;
+}
+
+.radar-footer button:nth-child(4) i {
+  background: #d49d43;
+}
+
+.radar-footer button.active {
+  color: #1d5872;
+  font-weight: 800;
 }
 
 .intel-feed-top {
