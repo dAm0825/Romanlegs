@@ -10,10 +10,13 @@ Vue App Shell
 ├── /scan             可疑消息输入
 ├── /report/:id       风险报告
 ├── /practice         AI 情景演练
+├── /academy          知识与短课
+├── /challenge        每日挑战
 ├── /cases            真实新闻案例
 ├── /dashboard        本地成长记录
 ├── /assistant        AI 反诈助手
-└── /profile          安全档案
+├── /profile          安全档案
+└── /login            登录 / 注册 / 体验账户
 ```
 
 这种结构避免把输入、结果、建议、案例和聊天全部追加在一张长页面上。
@@ -27,7 +30,9 @@ Vue App Shell
   ├─ POST /api/practice ─► 情景状态 → DeepSeek 角色扮演 → 确定性风险复核
   ├─ POST /api/assistant ─► RAG 检索 → DeepSeek 回答 → 知识来源过滤
   ├─ GET  /api/news ──────► 公开新闻案例 JSON
-  └─ GET  /api/scenarios ─► 预置演练场景
+  ├─ GET  /api/scenarios ─► 预置演练场景
+  ├─ GET  /api/challenges ► 不包含答案的挑战题目
+  └─ POST /api/challenges/grade ► 服务端评分与逐题解释
 ```
 
 ## 风险检测
@@ -51,6 +56,13 @@ Vue App Shell
 ## AI 助手
 
 助手先检索本地反诈知识和公开新闻，再把结果送入 DeepSeek。回答只允许引用提供的知识或案例，前端同时展示知识条目和新闻原文链接。
+
+## 账户与训练模块
+
+- 注册密码使用浏览器 Web Crypto 进行加盐 SHA-256 哈希，原始密码不写入 localStorage。
+- 演示账户可以跳过注册直接体验。
+- 成长记录、知识训练和每日挑战需要登录；登录后按原目标路由跳转。
+- 知识训练保存已掌握课程；每日挑战保存最高成绩、完成次数与逐题解释。
 
 ## 隐私
 
