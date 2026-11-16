@@ -1563,8 +1563,8 @@
           </div>
           <div v-if="store.state.auth.user" class="session-card">
             <span>当前已登录</span>
-            <strong>{{ store.state.auth.user.guest ? 'test' : store.state.auth.user.nickname }}</strong>
-            <small>{{ store.state.auth.user.email }}</small>
+            <strong>{{ store.state.auth.user.guest ? '本地体验用户' : store.state.auth.user.nickname }}</strong>
+            <small v-if="!store.state.auth.user.guest">{{ store.state.auth.user.email }}</small>
             <button class="primary-button" type="button" @click="continueSession">进入成长记录 <app-icon name="arrow"/></button>
             <button class="text-action" type="button" @click="store.logout()">退出当前账户</button>
           </div>
@@ -1579,8 +1579,8 @@
                 <input v-model="form.nickname" maxlength="16" autocomplete="nickname" placeholder="例如：小林" />
               </label>
               <label>
-                <span>邮箱</span>
-                <input v-model="form.email" type="email" autocomplete="email" placeholder="name@example.com" />
+                <span>登录账号</span>
+                <input v-model="form.email" type="text" autocomplete="username" placeholder="请输入登录账号" />
               </label>
               <label>
                 <span>密码</span>
@@ -1988,7 +1988,7 @@
                 :class="{ selected: selected === index }"
                 @click="choose(index)"
               >
-                <span>{{ String.fromCharCode(65 + index) }}</span>
+                <span>{{ ['甲', '乙', '丙', '丁'][index] }}</span>
                 <p>{{ option }}</p>
               </button>
             </div>

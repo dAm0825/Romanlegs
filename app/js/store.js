@@ -104,7 +104,7 @@
     const cleanEmail = String(email || "").trim().toLowerCase();
     const cleanNickname = String(nickname || "").trim();
     if (cleanNickname.length < 2) throw new Error("昵称至少需要 2 个字符");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) throw new Error("请输入有效邮箱");
+    if (cleanEmail.length < 2) throw new Error("请输入至少两个字符的登录账号");
     if (String(password || "").length < 8) throw new Error("密码至少需要 8 个字符");
     const users = read(storageKeys.users, []);
     if (users.some((item) => item.email === cleanEmail)) {
@@ -132,7 +132,7 @@
     const user = users.find((item) => item.email === cleanEmail);
     if (!user) throw new Error("当前浏览器没有找到该账户");
     const passwordHash = await hashPassword(password, user.salt);
-    if (passwordHash !== user.passwordHash) throw new Error("邮箱或密码错误");
+    if (passwordHash !== user.passwordHash) throw new Error("账号或密码错误");
     persistSession({ id: user.id, nickname: user.nickname, email: user.email });
     showToast("登录成功", "success");
   }

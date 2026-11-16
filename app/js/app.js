@@ -77,12 +77,14 @@
       const profileOpen = ref(false);
 
       const activePath = computed(() => route.path);
-      const initials = computed(
-        () => (store.state.auth.user?.guest ? "T" : (store.state.auth.user?.nickname || "同")).slice(0, 1),
-      );
+      const initials = computed(() => {
+        if (store.state.auth.user?.guest) return "访";
+        const nickname = store.state.auth.user?.nickname || "用";
+        return Array.from(nickname).find((character) => /[\u3400-\u9fff]/.test(character)) || "用";
+      });
       const userLabel = computed(() => {
         if (!store.state.auth.user) return "登录 / 注册";
-        return store.state.auth.user.guest ? "test" : store.state.auth.user.nickname;
+        return store.state.auth.user.guest ? "本地体验" : store.state.auth.user.nickname;
       });
 
       watch(
@@ -151,8 +153,8 @@
               </button>
               <div v-if="profileOpen" class="profile-popover">
                 <span>{{ store.state.auth.user?.guest ? '本地体验账户' : '已登录账户' }}</span>
-                <strong>{{ store.state.auth.user?.guest ? 'test' : store.state.auth.user?.nickname }}</strong>
-                <small>{{ store.state.auth.user?.email }}</small>
+                <strong>{{ store.state.auth.user?.guest ? '本地体验用户' : store.state.auth.user?.nickname }}</strong>
+                <small v-if="!store.state.auth.user?.guest">{{ store.state.auth.user?.email }}</small>
                 <router-link to="/profile">编辑安全档案 <app-icon name="arrow"/></router-link>
                 <button type="button" @click="logout">退出登录</button>
               </div>
