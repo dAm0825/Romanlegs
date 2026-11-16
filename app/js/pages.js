@@ -732,7 +732,7 @@
           <div class="report-main">
             <div class="report-tabs" role="tablist">
               <button :class="{ active: activeTab === 'overview' }" @click="activeTab = 'overview'">风险诊断</button>
-              <button :class="{ active: activeTab === 'evidence' }" @click="activeTab = 'evidence'">核验依据</button>
+              <button :class="{ active: activeTab === 'evidence' }" @click="activeTab = 'evidence'">案例参照</button>
               <button :class="{ active: activeTab === 'action' }" @click="activeTab = 'action'">行动清单</button>
             </div>
 
