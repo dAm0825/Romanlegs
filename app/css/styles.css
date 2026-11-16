@@ -254,6 +254,10 @@ svg {
   cursor: pointer;
 }
 
+.profile-button:not(.with-avatar) {
+  padding: 0 14px;
+}
+
 .profile-button .avatar {
   display: grid;
   place-items: center;
@@ -888,6 +892,8 @@ svg {
 
 .feature-card {
   position: relative;
+  display: flex;
+  flex-direction: column;
   min-height: 330px;
   padding: 25px;
   border: 1px solid var(--line);
@@ -909,12 +915,13 @@ svg {
 }
 
 .feature-practice {
-  background: var(--lime);
+  background: #e5f3cb;
+  color: var(--ink);
 }
 
 .feature-cases {
-  background: var(--orange);
-  color: white;
+  background: #fbe4d9;
+  color: var(--ink);
 }
 
 .feature-index {
@@ -929,7 +936,7 @@ svg {
   place-items: center;
   width: 68px;
   height: 68px;
-  margin: 40px 0 38px;
+  margin: 30px 0 26px;
   border: 1px solid currentColor;
   border-radius: 50%;
   opacity: 0.82;
@@ -955,14 +962,12 @@ svg {
 }
 
 .feature-link {
-  position: absolute;
-  right: 25px;
-  bottom: 22px;
-  left: 25px;
+  position: static;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding-top: 13px;
+  margin-top: auto;
   border-top: 1px solid currentColor;
   font-size: 8px;
   opacity: 0.65;
@@ -3077,6 +3082,52 @@ svg {
   min-height: calc(100vh - 122px);
   margin: 0 auto;
   background: var(--surface);
+}
+
+.login-page.login-centered {
+  display: block;
+  min-height: calc(100vh - 122px);
+  padding: 44px 18px 56px;
+  background:
+    radial-gradient(circle at 18% 24%, rgba(160, 211, 232, 0.3), transparent 28%),
+    radial-gradient(circle at 82% 72%, rgba(185, 226, 215, 0.3), transparent 25%),
+    linear-gradient(135deg, #f7f4ed, #ebf7fc 50%, #f8f3e9);
+}
+
+.login-card {
+  width: min(570px, 100%);
+  margin: 24px auto 0;
+  padding: 30px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255, 254, 250, 0.94);
+  box-shadow: 0 24px 65px rgba(46, 105, 132, 0.12);
+}
+
+.login-simple-head {
+  margin-bottom: 18px;
+  text-align: center;
+}
+
+.login-simple-head h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.login-card .login-panel {
+  width: 100%;
+  padding: 0;
+}
+
+.login-card .login-tabs {
+  justify-content: center;
+}
+
+.login-card .session-card {
+  margin-top: 8px;
 }
 
 .login-visual {
