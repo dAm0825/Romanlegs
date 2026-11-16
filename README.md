@@ -6,6 +6,8 @@
 
 技术文档：[MingBian-technical-document.pdf](docs/MingBian-technical-document.pdf)
 
+演示视频脚本：[demo-script.md](docs/demo-script.md)
+
 ## 产品功能
 
 - **可疑消息检测**：逐句识别返利、垫付、屏幕共享、验证码和二次转账等风险信号。
