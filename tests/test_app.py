@@ -6,6 +6,7 @@ from pathlib import Path
 
 from server.analyzer import FraudAnalyzer
 from server.assistant import SafetyCopilot
+from server.challenges import ChallengeEngine
 from server.safety import redact_sensitive
 
 
@@ -70,6 +71,24 @@ class CopilotTests(unittest.TestCase):
             [{"role": "user", "content": "我不会垫付，也不会共享屏幕，我会自己向官方核实。"}],
         )
         self.assertGreater(result["risk_delta"], 0)
+
+
+class ChallengeTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.engine = ChallengeEngine(ROOT)
+
+    def test_public_questions_do_not_expose_answers(self):
+        questions = self.engine.public_questions()
+        self.assertTrue(questions)
+        self.assertNotIn("answer", questions[0])
+        self.assertNotIn("explanation", questions[0])
+
+    def test_perfect_score(self):
+        answers = {item["id"]: item["answer"] for item in self.engine.questions}
+        result = self.engine.grade(answers)
+        self.assertEqual(result["score"], 100)
+        self.assertEqual(result["level"], "反诈先锋")
 
 
 if __name__ == "__main__":
