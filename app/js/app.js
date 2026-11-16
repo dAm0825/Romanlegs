@@ -136,8 +136,13 @@
               </span>
             </router-link>
             <div class="top-actions">
-              <button class="profile-button" type="button" @click="openProfile">
-                <span class="avatar">{{ initials }}</span>
+              <button
+                class="profile-button"
+                :class="{ 'with-avatar': store.state.auth.user }"
+                type="button"
+                @click="openProfile"
+              >
+                <span v-if="store.state.auth.user" class="avatar">{{ initials }}</span>
                 <span class="profile-label">{{ userLabel }}</span>
                 <svg viewBox="0 0 16 16"><path d="m4 6 4 4 4-4"/></svg>
               </button>
