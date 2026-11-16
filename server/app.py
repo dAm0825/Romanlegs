@@ -12,11 +12,13 @@ if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
     from server.analyzer import FraudAnalyzer
     from server.assistant import SafetyCopilot
+    from server.challenges import ChallengeEngine
     from server.config import ROOT, get_config
     from server.safety import sanitize_chat_history
 else:
     from .analyzer import FraudAnalyzer
     from .assistant import SafetyCopilot
+    from .challenges import ChallengeEngine
     from .config import ROOT, get_config
     from .safety import sanitize_chat_history
 
@@ -24,6 +26,7 @@ else:
 APP_DIR = ROOT / "app"
 ANALYZER = FraudAnalyzer(ROOT)
 COPILOT = SafetyCopilot(ROOT)
+CHALLENGES = ChallengeEngine(ROOT)
 
 
 class MingBianHandler(SimpleHTTPRequestHandler):
@@ -79,6 +82,9 @@ class MingBianHandler(SimpleHTTPRequestHandler):
 
             self._json({"scenarios": [{"id": key, **value} for key, value in SCENARIOS.items()]})
             return
+        if path == "/api/challenges":
+            self._json({"questions": CHALLENGES.public_questions()})
+            return
 
         requested = (APP_DIR / path.lstrip("/")).resolve()
         if path == "/" or path.startswith("/") and not Path(path).suffix:
@@ -118,6 +124,8 @@ class MingBianHandler(SimpleHTTPRequestHandler):
                         sanitize_chat_history(payload.get("history", [])),
                     )
                 )
+            elif path == "/api/challenges/grade":
+                self._json(CHALLENGES.grade(payload.get("answers")))
             else:
                 self.send_error(HTTPStatus.NOT_FOUND)
         except ValueError as exc:
