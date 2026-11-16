@@ -100,42 +100,98 @@
         {
           name: "刷单返利",
           short: "垫付与连单",
+          label: "刷单返利",
           categories: ["刷单返利", "虚假招聘"],
           caseCategory: "刷单返利",
           detail: "先用小额返利建立信任，再以连单、冻结和提现失败为由持续索款。",
           signal: "最容易忽略：第一笔真的返钱了。",
           scenario: "part-time",
           position: "signal-one",
+          labelSide: "right",
         },
         {
           name: "屏幕共享",
           short: "验证码与隐私",
+          label: "屏幕共享",
           categories: ["冒充电商客服", "注销校园贷"],
           caseCategory: "冒充电商客服",
           detail: "假客服以退款或注销账户为名，要求共享屏幕并实时读取验证码和支付页面。",
           signal: "关键红线：正规退款不需要远程控制手机。",
           scenario: "customer",
           position: "signal-two",
+          labelSide: "left",
         },
         {
           name: "身份冒充",
           short: "公检法与熟人",
+          label: "身份冒充",
           categories: ["冒充公检法", "冒充熟人"],
           caseCategory: "冒充公检法",
           detail: "伪造警官证、熟人账号或老师身份，用恐惧和紧急感阻止你向外界核验。",
           signal: "关键判断：越要求保密，越要独立核实。",
           scenario: "authority",
           position: "signal-three",
+          labelSide: "left",
         },
         {
           name: "虚假投资",
           short: "收益截图诱惑",
+          label: "虚假投资",
           categories: ["虚假投资理财"],
           caseCategory: "虚假投资理财",
           detail: "用内部名额、稳定收益和虚假盈利截图诱导下载陌生软件，再阻止正常提现。",
           signal: "关键红线：先充值才能提现，就是危险信号。",
           scenario: "investment",
           position: "signal-four",
+          labelSide: "left",
+        },
+        {
+          name: "游戏交易",
+          short: "账号与装备",
+          label: "游戏交易",
+          categories: ["游戏虚假交易"],
+          caseCategory: "游戏虚假交易",
+          detail: "用伪造平台、支付截图和解冻页面制造交易成功假象，再要求卖家继续付款。",
+          signal: "关键红线：正规交易不会要求先交解冻费或保证金。",
+          scenario: "game",
+          position: "signal-five",
+          labelSide: "left",
+        },
+        {
+          name: "奖助学金",
+          short: "补助与退费",
+          label: "奖助学金",
+          categories: ["助学金诈骗", "教育退费"],
+          caseCategory: "助学金诈骗",
+          detail: "冒充学校或教育机构，以补助领取、课程退费和安全认证为由索要手续费。",
+          signal: "关键判断：正规奖助学金不会要求先缴费。",
+          scenario: "scholarship",
+          position: "signal-six",
+          labelSide: "right",
+        },
+        {
+          name: "粉丝福利",
+          short: "免费周边",
+          label: "粉丝福利",
+          categories: ["粉丝福利", "游戏虚假交易"],
+          caseCategory: "游戏虚假交易",
+          detail: "以免费周边、签名专辑和粉丝福利为入口，再要求助力、消费或提供支付密码。",
+          signal: "关键红线：免费福利不应变成连续付费任务。",
+          scenario: "merch",
+          position: "signal-seven",
+          labelSide: "right",
+        },
+        {
+          name: "票务陷阱",
+          short: "私下交易",
+          label: "票务陷阱",
+          categories: ["虚假购物"],
+          caseCategory: "虚假购物",
+          detail: "用内部票和低价票诱导脱离平台付款，再以订单冻结和刷流水为由继续索款。",
+          signal: "关键判断：脱离担保平台的交易最难追回。",
+          scenario: "ticket",
+          position: "signal-eight",
+          labelSide: "right",
         },
       ];
       const intelItems = [
@@ -162,6 +218,30 @@
           level: "高发套路",
           title: "收益截图为什么不能相信？",
           summary: "虚假软件可以伪造盈利数字。无法自由提现、继续充值解锁时，应立即止损。",
+        },
+        {
+          tag: "游戏交易",
+          level: "高发套路",
+          title: "支付成功截图，为什么不能证明钱已经到账？",
+          summary: "伪造平台可以用后台数字冒充到账。解冻费、保证金和验资款都是继续索款的入口。",
+        },
+        {
+          tag: "奖助学金",
+          level: "校园高发",
+          title: "领取补助前，为什么会被要求先交手续费？",
+          summary: "正规奖助学金通过学校官方渠道发放，不会要求学生先转账或提供支付验证码。",
+        },
+        {
+          tag: "粉丝福利",
+          level: "新型诱饵",
+          title: "免费明星周边，为什么会变成连续任务？",
+          summary: "先消费后返现、支付密码验证和最后一单，本质上仍是刷单返利骗局。",
+        },
+        {
+          tag: "票务陷阱",
+          level: "重点防范",
+          title: "脱离平台买票，为什么退款反而要再转账？",
+          summary: "私下交易失去平台担保，所谓冻结、备注错误和刷流水都只是继续索款的借口。",
         },
       ];
       const heatItems = [
@@ -257,7 +337,7 @@
             <article class="radar-intel-card">
               <div class="intel-card-title">
                 <div><span>风险信号</span><strong>校园诈骗雷达</strong></div>
-                <b>点击可交互</b>
+                <b>8 个风险点</b>
               </div>
               <div class="radar-main">
                 <div class="radar-visual">
@@ -272,12 +352,12 @@
                     :key="signal.name"
                     type="button"
                     class="radar-dot"
-                    :class="[signal.position, { active: activeRadar === index }]"
+                    :class="[signal.position, 'label-' + signal.labelSide, { active: activeRadar === index }]"
                     :aria-label="'查看' + signal.name + '风险'"
+                    :aria-pressed="activeRadar === index"
                     :title="signal.name"
                     @click="selectRadar(index)"
-                  ><span></span></button>
-                  <em>{{ activeRadarSignal.short }}</em>
+                  ><i></i><span>{{ signal.label }}</span></button>
                 </div>
                 <div class="radar-readout">
                   <span>当前风险点</span>
@@ -310,7 +390,7 @@
                 <span>{{ intelItems[activeIntel].tag }}</span>
                 <b>{{ intelItems[activeIntel].level }}</b>
               </div>
-              <div class="intel-feed-number">{{ String(activeIntel + 1).padStart(2, '0') }} / 04</div>
+              <div class="intel-feed-number">{{ String(activeIntel + 1).padStart(2, '0') }} / {{ String(intelItems.length).padStart(2, '0') }}</div>
               <transition name="intel-copy" mode="out-in">
                 <div :key="activeIntel" class="intel-feed-copy">
                   <h3>{{ intelItems[activeIntel].title }}</h3>
@@ -325,7 +405,7 @@
                     type="button"
                     :class="{ active: activeIntel === index }"
                     :aria-label="'查看第 ' + (index + 1) + ' 条训练情报'"
-                    @click="activeIntel = index"
+                    @click="selectRadar(index)"
                   ></button>
                 </div>
                 <router-link to="/practice">进入演练 <app-icon name="arrow"/></router-link>
