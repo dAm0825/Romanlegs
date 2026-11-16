@@ -52,8 +52,8 @@ WHITE = colors.white
 
 def register_fonts() -> tuple[str, str]:
     paths = {
-        "body": ("/System/Library/Fonts/STHeiti Light.ttc", 0),
-        "display": ("/System/Library/Fonts/Supplemental/Songti.ttc", 0),
+        "body": ("/Applications/Microsoft Word.app/Contents/Resources/DFonts/msyh.ttc", 0),
+        "display": ("/Applications/Microsoft Word.app/Contents/Resources/DFonts/msyhbd.ttc", 0),
     }
     result = {}
     for key, (path, index) in paths.items():
