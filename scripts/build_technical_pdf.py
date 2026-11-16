@@ -312,7 +312,7 @@ def body_page(canvas, doc):
     canvas.line(LEFT, PAGE_H - 13 * mm, PAGE_W - RIGHT, PAGE_H - 13 * mm)
     canvas.setFillColor(MUTED)
     canvas.setFont(BODY, 6.2)
-    canvas.drawString(LEFT, PAGE_H - 17 * mm, "明辨 · 校园反诈陪练")
+    canvas.drawString(LEFT, PAGE_H - 17 * mm, "智能反诈训练系统")
     canvas.drawRightString(PAGE_W - RIGHT, PAGE_H - 17 * mm, "技术设计")
     canvas.line(LEFT, 13 * mm, PAGE_W - RIGHT, 13 * mm)
     canvas.drawString(LEFT, 8.5 * mm, "校园反诈训练")
@@ -325,7 +325,7 @@ def story() -> list:
         Spacer(1, 28 * mm),
         Mark(),
         Spacer(1, 14 * mm),
-        p("项目技术文档", "MB-Eyebrow"),
+        p("智能反诈训练系统 · 项目技术文档", "MB-Eyebrow"),
         p("识破一次，<br/>才能真正学会拒绝。", "MB-Cover"),
         p(
             "面向大学生的校园反诈陪练。<br/>"
@@ -346,13 +346,13 @@ def story() -> list:
     ]
 
     content += [
-        *block("01 产品概述", "明辨把反诈从“知识阅读”推进到“压力下练习”。"),
+        *block("01 产品概述", "智能反诈训练系统把反诈从“知识阅读”推进到“压力下练习”。"),
         p(
             "大学生常见的诈骗场景集中在兼职刷单、冒充客服、冒充公检法、注销校园贷、门票私下交易和游戏账号交易。"
             "普通宣传页通常只展示警示口号，用户看懂之后仍可能在对方持续施压时作出错误操作。"
         ),
         p(
-            "明辨把完整过程拆为：设置安全档案、检测可疑消息、阅读风险与证据、进入同类情景演练、查看成长记录、随时咨询智能助手。"
+            "系统把完整过程拆为：设置安全档案、检测可疑消息、阅读风险与证据、进入同类情景演练、查看成长记录、随时咨询智能助手。"
             "每个任务都由独立路由承载，避免把所有功能堆在首页。",
         ),
         table(
@@ -384,7 +384,7 @@ def story() -> list:
             "这一分工可以降低模型漏判，也避免网络波动导致演示完全不可用。",
             "MB-Quote",
         ),
-        *shot("home.png", "图 2-2 明辨首页：品牌、风险示意和三个独立功能入口"),
+        *shot("home.png", "图 2-2 系统首页：功能定位、风险示意和三个独立入口"),
         PageBreak(),
     ]
 
@@ -555,12 +555,12 @@ def story() -> list:
         p("- 真实新闻卡直接跳到原文，增强内容可信度。"),
         p("- 安全档案与成长记录均围绕本地数据构建，减少敏感信息上传。"),
         p(
-            "明辨的价值不只是帮助学生记住反诈口号，而是提供一次可重复的低风险训练。"
+            "系统的价值不只是帮助学生记住反诈口号，而是提供一次可重复的低风险训练。"
             "高校保卫处、辅导员和学生组织也可以使用相同框架开展定制化安全教育。",
             "MB-Quote",
         ),
         Spacer(1, 20),
-        p("明辨 · 校园反诈陪练", "MB-H2"),
+        p("智能反诈训练系统", "MB-H2"),
         p(
             "2026 传智杯网页开发挑战赛参赛项目。"
             "本应用用于风险教育，不替代警方、银行或法律专业机构的正式结论。",
@@ -578,7 +578,7 @@ def build():
         rightMargin=RIGHT,
         topMargin=20 * mm,
         bottomMargin=18 * mm,
-        title="明辨校园反诈陪练技术文档",
+        title="智能反诈训练系统技术文档",
         subject="2026 传智杯网页开发挑战赛",
         author="dAm0825",
     )

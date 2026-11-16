@@ -66,12 +66,9 @@
         <div class="home-hero">
           <div class="hero-text">
             <p class="eyebrow"><span>01</span>反诈训练</p>
-            <h1>
-              先陪你<span>识破一次</span>，<br />
-              再让你真正学会拒绝。
-            </h1>
+            <h1>智能反诈训练系统</h1>
             <p class="hero-description">
-              明辨不是一份静态反诈手册。粘贴可疑消息，让智能分析拆解套路；进入模拟对话，练习在压力下说“不”。
+              检测可疑消息，阅读真实案例，练习识破常见骗局。
             </p>
             <div class="hero-cta">
               <router-link class="primary-button" to="/scan">
@@ -138,7 +135,7 @@
         <section class="feature-section">
           <div class="section-title">
             <p class="eyebrow"><span>02</span>核心模块</p>
-            <h2>把“别转账”变成<br/>真正可练习的能力。</h2>
+            <h2>核心功能</h2>
           </div>
           <div class="feature-grid">
             <router-link class="feature-card feature-scan" to="/scan">
@@ -243,7 +240,7 @@
           index="02"
           eyebrow="可疑消息检测"
           title="这条消息，哪里不对劲？"
-          description="粘贴聊天记录、短信或招聘信息。明辨会先保护个人标识，再拆解话术、检索依据并给出下一步。"
+          description="粘贴聊天记录、短信或招聘信息，识别高风险话术和可疑操作。"
         />
         <div class="scan-layout">
           <div class="composer-card">
@@ -340,7 +337,7 @@
         <div class="report-head">
           <div>
             <p class="eyebrow"><span>03</span>风险报告 / {{ report.id }}</p>
-            <h1>把风险看懂，<br/>再决定怎么处理。</h1>
+            <h1>风险分析报告</h1>
           </div>
           <button class="secondary-button compact" type="button" @click="copyReport">
             {{ isCopied ? '已复制' : '复制报告' }}
@@ -477,7 +474,7 @@
         <header class="cases-header">
           <div>
             <p class="eyebrow"><span>04</span>真实案例档案</p>
-            <h1>真实发生过的，<br/>比假设更有说服力。</h1>
+            <h1>真实校园诈骗案例</h1>
           </div>
           <div class="cases-intro">
             <span>仅收录公开新闻</span>
@@ -633,7 +630,7 @@
         <div class="practice-top">
           <div>
             <p class="eyebrow"><span>05</span>情景压力演练</p>
-            <h1>在对话里，<br/>练会说“不”。</h1>
+            <h1>反诈情景演练</h1>
           </div>
           <div class="safety-score">
             <span>当前安全分</span>
@@ -839,7 +836,7 @@
       const messages = ref([
         {
           role: "assistant",
-          content: "我是明辨智能助手。你可以告诉我对方自称什么、要求你做什么，我会先帮你判断危险点，再给出核验和止损步骤。",
+          content: "我是反诈智能助手。你可以告诉我对方自称什么、要求你做什么，我会先帮你判断危险点，再给出核验和止损步骤。",
         },
       ]);
       const input = ref("");
@@ -890,7 +887,7 @@
         <div class="assistant-shell">
           <aside class="assistant-intro">
             <p class="eyebrow"><span>07</span>智能安全助手</p>
-            <h1>不确定时，<br/>先问明辨。</h1>
+            <h1>反诈智能助手</h1>
             <p>不查你的真实账户，不索要密码。只根据官方知识和公开案例，帮你判断下一步。</p>
             <div class="assistant-boundaries">
               <div><span>01</span>先停止高风险操作</div>
@@ -900,12 +897,12 @@
           </aside>
           <div class="assistant-chat">
             <div class="assistant-chat-head">
-              <div><span class="ai-avatar"><app-icon name="spark"/></span><div><strong>明辨智能助手</strong><small>检索知识库 · 公开案例 · 安全边界</small></div></div>
+              <div><span class="ai-avatar"><app-icon name="spark"/></span><div><strong>反诈智能助手</strong><small>检索知识库 · 公开案例 · 安全边界</small></div></div>
               <span class="online-dot">在线</span>
             </div>
             <div ref="streamRef" class="assistant-stream">
               <article v-for="(message, index) in messages" :key="index" class="assistant-message" :class="message.role">
-                <span class="message-role">{{ message.role === 'assistant' ? '明辨' : '你' }}</span>
+                <span class="message-role">{{ message.role === 'assistant' ? '助手' : '你' }}</span>
                 <div class="message-body">
                   <p>{{ message.content }}</p>
                   <div v-if="message.evidence?.length" class="assistant-sources">
@@ -1003,11 +1000,11 @@
         <div class="login-visual">
           <router-link class="login-brand" to="/">
             <span class="brand-symbol"><i></i><i></i></span>
-            <span><b>明辨</b></span>
+            <span><b>智能反诈训练系统</b></span>
           </router-link>
           <div class="login-copy">
             <p class="eyebrow"><span>09</span>账户与训练档案</p>
-            <h1>把每次警觉，<br/>留在自己的成长档案里。</h1>
+            <h1>登录与注册</h1>
             <p>登录后可保存检测报告、每日挑战成绩和情景演练记录。账户与数据仅保存在当前浏览器。</p>
           </div>
           <div class="login-orbit" aria-hidden="true">
@@ -1018,7 +1015,7 @@
         <div class="login-panel">
           <div v-if="store.state.auth.user" class="session-card">
             <span>当前已登录</span>
-            <strong>{{ store.state.auth.user.nickname }}</strong>
+            <strong>{{ store.state.auth.user.guest ? 'test' : store.state.auth.user.nickname }}</strong>
             <small>{{ store.state.auth.user.email }}</small>
             <button class="primary-button" type="button" @click="continueSession">进入成长记录 <app-icon name="arrow"/></button>
             <button class="text-action" type="button" @click="store.logout()">退出当前账户</button>
@@ -1066,7 +1063,7 @@
             </form>
             <div class="login-divider"><span>或者</span></div>
             <button class="guest-login" type="button" @click="enterGuest">使用本地体验账户</button>
-            <p class="login-privacy">密码会加盐哈希后保存在当前浏览器；明辨不会将其发送到服务器。</p>
+            <p class="login-privacy">密码会加盐哈希后保存在当前浏览器，不会发送到服务器。</p>
           </template>
         </div>
       </section>
@@ -1147,7 +1144,7 @@
         <page-head
           index="10"
           eyebrow="知识训练"
-          title="先看懂套路，再进入压力练习。"
+          title="反诈知识训练"
           description="六个短课覆盖校园最高频的反诈主题。每个模块只讲关键判断，不堆成长篇宣传文章。"
         />
         <div class="academy-progress">
@@ -1274,7 +1271,7 @@
         <page-head
           index="11"
           eyebrow="每日安全挑战"
-          title="八道题，检查你的反诈反射。"
+          title="每日安全挑战"
           description="每题都来自真实高发套路。完成后查看逐题解释，并把成绩保存在成长记录中。"
         />
         <div v-if="loading" class="case-loading"><span></span><span></span></div>
@@ -1354,7 +1351,7 @@
         <page-head
           index="08"
           eyebrow="安全档案"
-          title="先说清楚，你常遇到什么。"
+          title="个人安全档案"
           description="安全档案只保存在本机，用于调整检测和演练的侧重点，不需要填写手机号、身份证或真实账户。"
         />
         <div class="profile-layout">

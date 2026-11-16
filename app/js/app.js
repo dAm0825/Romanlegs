@@ -1,5 +1,5 @@
 (function () {
-  const { createApp, computed, onMounted, ref, watch } = Vue;
+  const { createApp, computed, ref, watch } = Vue;
   const { createRouter, createWebHistory, useRoute, useRouter } = VueRouter;
   const store = window.MingBianStore;
   const pages = window.MingBianPages;
@@ -30,7 +30,7 @@
   });
 
   router.afterEach((to) => {
-    document.title = `${to.meta.title || "明辨"} · 明辨校园反诈陪练`;
+    document.title = `${to.meta.title || "首页"} · 智能反诈训练系统`;
   });
 
   router.beforeEach((to) => {
@@ -75,12 +75,15 @@
       const router = useRouter();
       const menuOpen = ref(false);
       const profileOpen = ref(false);
-      const modelState = ref("checking");
 
       const activePath = computed(() => route.path);
       const initials = computed(
-        () => (store.state.auth.user?.nickname || store.state.profile.nickname || "同").slice(0, 1),
+        () => (store.state.auth.user?.guest ? "T" : (store.state.auth.user?.nickname || "同")).slice(0, 1),
       );
+      const userLabel = computed(() => {
+        if (!store.state.auth.user) return "登录 / 注册";
+        return store.state.auth.user.guest ? "test" : store.state.auth.user.nickname;
+      });
 
       watch(
         () => route.fullPath,
@@ -89,15 +92,6 @@
           profileOpen.value = false;
         },
       );
-
-      onMounted(async () => {
-        try {
-          const health = await store.api("/api/health");
-          modelState.value = health.model_configured ? "online" : "local";
-        } catch {
-          modelState.value = "offline";
-        }
-      });
 
       function isActive(item) {
         if (item.to === "/") return activePath.value === "/";
@@ -124,8 +118,8 @@
         store,
         menuOpen,
         profileOpen,
-        modelState,
         initials,
+        userLabel,
         isActive,
         openProfile,
         logout,
@@ -138,17 +132,13 @@
             <router-link class="brand" to="/">
               <span class="brand-symbol"><i></i><i></i></span>
               <span class="brand-copy">
-                <strong>明辨</strong>
+                <strong>智能反诈训练系统</strong>
               </span>
             </router-link>
             <div class="top-actions">
-              <span class="system-state" :class="modelState">
-                <i></i>
-                {{ modelState === 'online' ? '智能模型已连接' : modelState === 'local' ? '本地模式' : modelState === 'checking' ? '正在连接' : '离线模式' }}
-              </span>
               <button class="profile-button" type="button" @click="openProfile">
                 <span class="avatar">{{ initials }}</span>
-                <span class="profile-label">{{ store.state.auth.user ? store.state.auth.user.nickname : '登录 / 注册' }}</span>
+                <span class="profile-label">{{ userLabel }}</span>
                 <svg viewBox="0 0 16 16"><path d="m4 6 4 4 4-4"/></svg>
               </button>
               <button class="mobile-menu" type="button" @click="menuOpen = !menuOpen" aria-label="打开菜单">
@@ -156,7 +146,7 @@
               </button>
               <div v-if="profileOpen" class="profile-popover">
                 <span>{{ store.state.auth.user?.guest ? '本地体验账户' : '已登录账户' }}</span>
-                <strong>{{ store.state.auth.user?.nickname }}</strong>
+                <strong>{{ store.state.auth.user?.guest ? 'test' : store.state.auth.user?.nickname }}</strong>
                 <small>{{ store.state.auth.user?.email }}</small>
                 <router-link to="/profile">编辑安全档案 <app-icon name="arrow"/></router-link>
                 <button type="button" @click="logout">退出登录</button>
@@ -189,7 +179,7 @@
         </main>
         <footer class="global-footer">
           <div>
-            <strong>明辨</strong>
+            <strong>智能反诈训练系统</strong>
             <span>识破一次，才能真正学会拒绝。</span>
           </div>
           <p>反诈识别不替代警方结论。如已转账或泄露信息，请立即联系银行并拨打 110。</p>

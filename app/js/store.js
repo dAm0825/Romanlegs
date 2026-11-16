@@ -136,7 +136,7 @@
   function guestLogin() {
     persistSession({
       id: "local-demo",
-      nickname: "体验同学",
+      nickname: "test",
       email: "demo@mingbian.local",
       guest: true,
     });

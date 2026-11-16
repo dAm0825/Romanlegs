@@ -287,7 +287,7 @@ class FraudAnalyzer:
     @staticmethod
     def _markdown(result: dict) -> str:
         lines = [
-            f"# 明辨风险报告 {result['id']}",
+            f"# 智能反诈训练系统风险报告 {result['id']}",
             "",
             f"**风险判断：{result['level']} · {result['score']}/100**",
             "",

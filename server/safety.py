@@ -60,7 +60,7 @@ def sanitize_chat_history(value: object, max_messages: int = 12) -> list[dict[st
 
 def boundary_text() -> str:
     return (
-        "明辨提供风险识别与安全演练，不替代警方或平台官方结论。"
+        "智能反诈训练系统提供风险识别与安全演练，不替代警方或平台官方结论。"
         "如已转账、泄露验证码或对方持续威胁，请立即停止操作，联系银行并拨打110报警。"
     )
 
