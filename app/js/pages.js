@@ -718,6 +718,7 @@
     setup() {
       const reports = computed(() => store.state.reports);
       const practices = computed(() => store.state.practiceHistory);
+      const challenges = computed(() => store.state.challengeHistory);
       const avgRisk = computed(() => {
         if (!reports.value.length) return 0;
         return Math.round(reports.value.reduce((sum, item) => sum + item.score, 0) / reports.value.length);
@@ -739,9 +740,28 @@
         { title: "第一次识别", active: reports.value.length > 0, icon: "scan" },
         { title: "完成演练", active: practices.value.length > 0, icon: "shield" },
         { title: "证据阅读者", active: reports.value.some((item) => item.evidence?.length), icon: "news" },
-        { title: "连续练习", active: practices.value.length >= 3, icon: "spark" },
+        { title: "连续练习", active: practices.value.length + challenges.value.length >= 3, icon: "spark" },
       ]);
-      return { reports, practices, avgRisk, avgSafety, categoryCounts, achievements, store };
+      const bestChallenge = computed(() =>
+        challenges.value.length ? Math.max(...challenges.value.map((item) => item.score)) : null,
+      );
+      const challengeSummary = computed(() =>
+        challenges.value.length
+          ? `已完成 ${challenges.value.length} 次挑战`
+          : "完成一次挑战，检验你的反诈反射。",
+      );
+      return {
+        reports,
+        practices,
+        challenges,
+        avgRisk,
+        avgSafety,
+        categoryCounts,
+        achievements,
+        bestChallenge,
+        challengeSummary,
+        store,
+      };
     },
     template: `
       <section class="workspace-page dashboard-page">
@@ -781,6 +801,14 @@
           </section>
 
           <aside class="growth-side">
+            <section class="challenge-summary-card">
+              <span class="rail-label">每日挑战</span>
+              <div>
+                <strong>{{ bestChallenge === null ? '—' : bestChallenge }}</strong>
+                <p>{{ challengeSummary }}</p>
+              </div>
+              <router-link to="/challenge">{{ challenges.length ? '再次挑战' : '开始挑战' }} <app-icon name="arrow"/></router-link>
+            </section>
             <section class="category-card">
               <span class="rail-label">高频风险类型</span>
               <div v-if="categoryCounts.length" class="category-bars">
@@ -908,6 +936,400 @@
     `,
   };
 
+  const LoginPage = {
+    setup() {
+      const route = useRoute();
+      const router = useRouter();
+      const mode = ref(route.query.mode === "register" ? "register" : "login");
+      const loading = ref(false);
+      const error = ref("");
+      const showPassword = ref(false);
+      const form = reactive({
+        nickname: "",
+        email: "",
+        password: "",
+        confirm: "",
+      });
+
+      function switchMode(next) {
+        mode.value = next;
+        error.value = "";
+      }
+
+      async function submit() {
+        error.value = "";
+        loading.value = true;
+        try {
+          if (mode.value === "register") {
+            if (form.password !== form.confirm) throw new Error("两次输入的密码不一致");
+            await store.register(form);
+          } else {
+            await store.login(form);
+          }
+          const redirect = typeof route.query.redirect === "string" ? route.query.redirect : "/dashboard";
+          await router.replace(redirect);
+        } catch (err) {
+          error.value = err.message;
+        } finally {
+          loading.value = false;
+        }
+      }
+
+      async function enterGuest() {
+        store.guestLogin();
+        const redirect = typeof route.query.redirect === "string" ? route.query.redirect : "/dashboard";
+        await router.replace(redirect);
+      }
+
+      async function continueSession() {
+        await router.replace("/dashboard");
+      }
+
+      return {
+        mode,
+        form,
+        loading,
+        error,
+        showPassword,
+        submit,
+        switchMode,
+        enterGuest,
+        continueSession,
+        store,
+      };
+    },
+    template: `
+      <section class="login-page">
+        <div class="login-visual">
+          <router-link class="login-brand" to="/">
+            <span class="brand-symbol"><i></i><i></i></span>
+            <span><b>明辨</b><small>MINGBIAN ANTI-FRAUD LAB</small></span>
+          </router-link>
+          <div class="login-copy">
+            <p class="eyebrow"><span>09</span>YOUR SAFETY ACCOUNT</p>
+            <h1>把每次警觉，<br/>留在自己的成长档案里。</h1>
+            <p>登录后可保存检测报告、每日挑战成绩和情景演练记录。账户与数据仅保存在当前浏览器。</p>
+          </div>
+          <div class="login-orbit" aria-hidden="true">
+            <span>STOP</span><span>VERIFY</span><span>SAVE</span>
+            <i></i><i></i><i></i>
+          </div>
+        </div>
+        <div class="login-panel">
+          <div v-if="store.state.auth.user" class="session-card">
+            <span>当前已登录</span>
+            <strong>{{ store.state.auth.user.nickname }}</strong>
+            <small>{{ store.state.auth.user.email }}</small>
+            <button class="primary-button" type="button" @click="continueSession">进入成长记录 <app-icon name="arrow"/></button>
+            <button class="text-action" type="button" @click="store.logout()">退出当前账户</button>
+          </div>
+          <template v-else>
+            <div class="login-tabs">
+              <button type="button" :class="{ active: mode === 'login' }" @click="switchMode('login')">登录</button>
+              <button type="button" :class="{ active: mode === 'register' }" @click="switchMode('register')">创建账户</button>
+            </div>
+            <div class="login-heading">
+              <span>{{ mode === 'login' ? 'WELCOME BACK' : 'CREATE YOUR PROFILE' }}</span>
+              <h2>{{ mode === 'login' ? '继续你的防骗训练。' : '建立你的本地安全档案。' }}</h2>
+              <p>{{ mode === 'login' ? '使用当前浏览器注册的账户继续。' : '无需手机号，不会上传真实身份信息。' }}</p>
+            </div>
+            <form class="login-form" @submit.prevent="submit">
+              <label v-if="mode === 'register'">
+                <span>昵称</span>
+                <input v-model="form.nickname" maxlength="16" autocomplete="nickname" placeholder="例如：小林" />
+              </label>
+              <label>
+                <span>邮箱</span>
+                <input v-model="form.email" type="email" autocomplete="email" placeholder="name@example.com" />
+              </label>
+              <label>
+                <span>密码</span>
+                <div class="password-field">
+                  <input
+                    v-model="form.password"
+                    :type="showPassword ? 'text' : 'password'"
+                    :autocomplete="mode === 'login' ? 'current-password' : 'new-password'"
+                    placeholder="至少 8 个字符"
+                  />
+                  <button type="button" @click="showPassword = !showPassword">{{ showPassword ? '隐藏' : '显示' }}</button>
+                </div>
+              </label>
+              <label v-if="mode === 'register'">
+                <span>确认密码</span>
+                <input v-model="form.confirm" type="password" autocomplete="new-password" placeholder="再次输入密码" />
+              </label>
+              <p v-if="error" class="login-error">{{ error }}</p>
+              <button class="login-submit" type="submit" :disabled="loading">
+                {{ loading ? '请稍候' : mode === 'login' ? '登录' : '创建账户' }}
+                <app-icon name="arrow"/>
+              </button>
+            </form>
+            <div class="login-divider"><span>或者</span></div>
+            <button class="guest-login" type="button" @click="enterGuest">使用本地体验账户</button>
+            <p class="login-privacy">密码会加盐哈希后保存在 localStorage；明辨不会将其发送到服务器。</p>
+          </template>
+        </div>
+      </section>
+    `,
+  };
+
+  const courses = [
+    {
+      id: "brush",
+      title: "刷单返利",
+      code: "01",
+      summary: "先返小钱，再诱导你为了“提现”继续投入。",
+      principles: ["不存在需要先垫付的正规刷单兼职", "小额到账只是降低警觉的诱饵", "连续任务、操作错误和账户冻结都是追加付款话术"],
+      warning: "不要为了拿回前一笔钱而继续转账。",
+    },
+    {
+      id: "authority",
+      title: "冒充公检法",
+      code: "02",
+      summary: "伪造身份、制造恐惧，再以保密为由隔离你。",
+      principles: ["公安机关不会电话索要保证金", "不会要求你转入所谓安全账户", "不会阻止你向家人或属地派出所核实"],
+      warning: "越要求保密，越应立即向外界求证。",
+    },
+    {
+      id: "customer",
+      title: "假客服退款",
+      code: "03",
+      summary: "退款通常原路返回，不需要共享屏幕。",
+      principles: ["验证码不能提供给任何陌生人", "不要下载陌生会议或远程控制软件", "不要使用对方提供的客服入口核验"],
+      warning: "屏幕共享会把你的短信和操作完整暴露给对方。",
+    },
+    {
+      id: "loan",
+      title: "注销校园贷",
+      code: "04",
+      summary: "用征信焦虑诱导学生先贷款、再转账。",
+      principles: ["个人征信由中国人民银行统一管理", "不存在私人客服的资金清算账户", "不要为了注销记录去申请网贷"],
+      warning: "先借款再“清账”会同时形成负债和资金损失。",
+    },
+    {
+      id: "ticket",
+      title: "票务私售",
+      code: "05",
+      summary: "低价内部票往往要求你绕开平台担保。",
+      principles: ["票务交易应留在官方平台", "不扫陌生收款码", "付款后要求再转账才能退款的应立即停止"],
+      warning: "脱离平台后，对方身份和订单都无法确认。",
+    },
+    {
+      id: "game",
+      title: "游戏交易",
+      code: "06",
+      summary: "虚假支付截图和伪造平台联合制造“冻结”。",
+      principles: ["只使用官方交易渠道", "另行打开官网核验平台真实性", "拒绝保证金、解冻费和验资款"],
+      warning: "支付成功截图不是资金到账的证明。",
+    },
+  ];
+
+  const AcademyPage = {
+    components: { PageHead },
+    setup() {
+      const selectedId = ref(courses[0].id);
+      const selected = computed(() => courses.find((item) => item.id === selectedId.value) || courses[0]);
+      const learned = computed(() => store.state.learningProgress);
+      const progress = computed(() => Math.round((learned.value.length / courses.length) * 100));
+
+      function selectCourse(id) {
+        selectedId.value = id;
+      }
+
+      function complete() {
+        store.markLearned(selected.value.id);
+      }
+
+      return { courses, selectedId, selected, learned, progress, selectCourse, complete };
+    },
+    template: `
+      <section class="workspace-page academy-page">
+        <page-head
+          index="10"
+          eyebrow="KNOWLEDGE LAB"
+          title="先看懂套路，再进入压力练习。"
+          description="六个短课覆盖校园最高频的反诈主题。每个模块只讲关键判断，不堆成长篇宣传文章。"
+        />
+        <div class="academy-progress">
+          <div><span>你的学习进度</span><strong>{{ progress }}%</strong></div>
+          <i><b :style="{ width: progress + '%' }"></b></i>
+          <router-link to="/challenge">参加每日挑战 <app-icon name="arrow"/></router-link>
+        </div>
+        <div class="academy-layout">
+          <div class="course-grid">
+            <button
+              v-for="course in courses"
+              :key="course.id"
+              type="button"
+              :class="{ active: selectedId === course.id, learned: learned.includes(course.id) }"
+              @click="selectCourse(course.id)"
+            >
+              <span>{{ course.code }}</span>
+              <div><strong>{{ course.title }}</strong><small>{{ course.summary }}</small></div>
+              <b>{{ learned.includes(course.id) ? '已掌握' : '→' }}</b>
+            </button>
+          </div>
+          <article class="course-detail">
+            <div class="course-detail-head">
+              <span>LESSON / {{ selected.code }}</span>
+              <strong>{{ selected.title }}</strong>
+              <p>{{ selected.summary }}</p>
+            </div>
+            <ol>
+              <li v-for="(item, index) in selected.principles" :key="item">
+                <span>0{{ index + 1 }}</span><p>{{ item }}</p>
+              </li>
+            </ol>
+            <div class="course-warning">
+              <span>记住这一句</span>
+              <p>{{ selected.warning }}</p>
+            </div>
+            <button class="primary-button" type="button" @click="complete">
+              {{ learned.includes(selected.id) ? '已完成本节' : '标记为已掌握' }}
+              <app-icon name="arrow"/>
+            </button>
+          </article>
+        </div>
+      </section>
+    `,
+  };
+
+  const ChallengePage = {
+    components: { PageHead },
+    setup() {
+      const loading = ref(true);
+      const questions = ref([]);
+      const currentIndex = ref(0);
+      const answers = reactive({});
+      const submitting = ref(false);
+      const result = ref(null);
+      const error = ref("");
+      const current = computed(() => questions.value[currentIndex.value]);
+      const selected = computed(() => (current.value ? answers[current.value.id] : null));
+      const progress = computed(() => (questions.value.length ? ((currentIndex.value + 1) / questions.value.length) * 100 : 0));
+
+      async function load() {
+        loading.value = true;
+        error.value = "";
+        try {
+          const data = await store.api("/api/challenges");
+          questions.value = data.questions;
+          currentIndex.value = 0;
+          Object.keys(answers).forEach((key) => delete answers[key]);
+          result.value = null;
+        } catch (err) {
+          error.value = err.message;
+        } finally {
+          loading.value = false;
+        }
+      }
+
+      function choose(index) {
+        if (!current.value || result.value) return;
+        answers[current.value.id] = index;
+      }
+
+      async function next() {
+        if (selected.value === null || selected.value === undefined) {
+          store.showToast("请先选择一个答案", "error");
+          return;
+        }
+        if (currentIndex.value < questions.value.length - 1) {
+          currentIndex.value += 1;
+          return;
+        }
+        submitting.value = true;
+        try {
+          result.value = await store.api("/api/challenges/grade", {
+            method: "POST",
+            body: JSON.stringify({ answers }),
+          });
+          store.saveChallengeResult(result.value);
+        } catch (err) {
+          store.showToast(err.message, "error");
+        } finally {
+          submitting.value = false;
+        }
+      }
+
+      onMounted(load);
+      return {
+        loading,
+        questions,
+        currentIndex,
+        answers,
+        submitting,
+        result,
+        error,
+        current,
+        selected,
+        progress,
+        choose,
+        next,
+        load,
+      };
+    },
+    template: `
+      <section class="workspace-page challenge-page">
+        <page-head
+          index="11"
+          eyebrow="DAILY CHALLENGE"
+          title="八道题，检查你的反诈反射。"
+          description="每题都来自真实高发套路。完成后查看逐题解释，并把成绩保存在成长记录中。"
+        />
+        <div v-if="loading" class="case-loading"><span></span><span></span></div>
+        <div v-else-if="error" class="challenge-error">{{ error }} <button type="button" @click="load">重新加载</button></div>
+        <div v-else-if="result" class="challenge-result">
+          <div class="result-score">
+            <span>CHALLENGE SCORE</span>
+            <strong>{{ result.score }}</strong>
+            <small>{{ result.correct }} / {{ result.total }} 正确</small>
+            <b>{{ result.level }}</b>
+          </div>
+          <div class="result-details">
+            <div class="result-heading">
+              <div><span>逐题复盘</span><h2>别只看分数，看看错在哪里。</h2></div>
+              <button type="button" @click="load">再挑战一次</button>
+            </div>
+            <article v-for="item in result.details" :key="item.id" :class="{ correct: item.correct }">
+              <span>{{ item.correct ? '✓' : '×' }}</span>
+              <div><strong>{{ item.category }}</strong><p>{{ item.explanation }}</p></div>
+            </article>
+          </div>
+        </div>
+        <div v-else class="challenge-layout">
+          <aside class="challenge-rail">
+            <span>QUESTION</span>
+            <strong>{{ String(currentIndex + 1).padStart(2, '0') }}</strong>
+            <small>/ {{ String(questions.length).padStart(2, '0') }}</small>
+            <div class="challenge-progress"><i :style="{ height: progress + '%' }"></i></div>
+            <p>完成后自动计入成长记录</p>
+          </aside>
+          <article v-if="current" class="question-card">
+            <div class="question-label"><span>{{ current.category }}</span><b>单选</b></div>
+            <h2>{{ current.question }}</h2>
+            <div class="answer-list">
+              <button
+                v-for="(option, index) in current.options"
+                :key="option"
+                type="button"
+                :class="{ selected: selected === index }"
+                @click="choose(index)"
+              >
+                <span>{{ String.fromCharCode(65 + index) }}</span>
+                <p>{{ option }}</p>
+              </button>
+            </div>
+            <button class="challenge-next" type="button" :disabled="selected === null || submitting" @click="next">
+              {{ currentIndex === questions.length - 1 ? (submitting ? '正在评分' : '提交答卷') : '下一题' }}
+              <app-icon name="arrow"/>
+            </button>
+          </article>
+        </div>
+      </section>
+    `,
+  };
+
   const ProfilePage = {
     components: { PageHead },
     setup() {
@@ -996,6 +1418,9 @@
     PracticePage,
     DashboardPage,
     AssistantPage,
+    LoginPage,
+    AcademyPage,
+    ChallengePage,
     ProfilePage,
   };
 })();
