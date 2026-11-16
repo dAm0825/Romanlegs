@@ -278,42 +278,83 @@ class AgentFlow(Flowable):
     def __init__(self):
         super().__init__()
         self.width = CONTENT
-        self.height = 210
+        self.height = 230
 
     def draw(self):
         c = self.canv
         boxes = [
-            ("输入", "可疑消息"),
-            ("本地", "脱敏 / 规则"),
-            ("检索", "知识 / 案例"),
-            ("模型", "解释 / 演练"),
-            ("复核", "安全边界"),
+            ("01", "可疑消息"),
+            ("02", "本地脱敏"),
+            ("03", "知识检索"),
+            ("04", "模型生成"),
+            ("05", "安全复核"),
         ]
-        gap = 9
+        gap = 18
         box_w = (CONTENT - gap * (len(boxes) - 1)) / len(boxes)
+        box_y = 126
+        box_h = 60
+
+        def horizontal_arrow(x1: float, y1: float, x2: float, y2: float):
+            c.setStrokeColor(colors.HexColor("#8DBDD0"))
+            c.setLineWidth(1)
+            c.line(x1, y1, x2 - 3, y2)
+            c.line(x2 - 7, y2 + 3, x2, y2)
+            c.line(x2 - 7, y2 - 3, x2, y2)
+
+        def vertical_arrow(x: float, y1: float, y2: float):
+            c.setStrokeColor(colors.HexColor("#8DBDD0"))
+            c.setLineWidth(1)
+            c.line(x, y1, x, y2 + 7)
+            c.line(x - 3, y2 + 7, x, y2)
+            c.line(x + 3, y2 + 7, x, y2)
+
         for index, (code, label) in enumerate(boxes):
             x = index * (box_w + gap)
             c.setFillColor(BLUE_2 if index in (0, 4) else PALE_BLUE)
-            c.roundRect(x, 105, box_w, 58, 8, fill=1, stroke=0)
-            c.setFillColor(ORANGE if index in (0, 4) else BLUE)
+            c.setStrokeColor(colors.HexColor("#B8D8E4"))
+            c.setLineWidth(0.6)
+            c.roundRect(x, box_y, box_w, box_h, 9, fill=1, stroke=1)
+            c.setFillColor(ORANGE)
             c.setFont(BODY, 6)
-            c.drawString(x + 7, 146, code)
+            c.drawString(x + 9, box_y + 43, code)
             c.setFillColor(INK)
-            c.setFont(BODY, 7)
-            c.drawString(x + 7, 122, label)
+            c.setFont(BODY, 8)
+            c.drawCentredString(x + box_w / 2, box_y + 20, label)
             if index < len(boxes) - 1:
-                c.setStrokeColor(LINE)
-                c.line(x + box_w, 134, x + box_w + gap, 134)
+                horizontal_arrow(
+                    x + box_w + 4,
+                    box_y + box_h / 2,
+                    x + box_w + gap - 4,
+                    box_y + box_h / 2,
+                )
+
+        panel_y = 22
+        panel_h = 54
         c.setFillColor(PALE_MINT)
-        c.roundRect(0, 18, CONTENT, 56, 8, fill=1, stroke=0)
+        c.setStrokeColor(colors.HexColor("#C7DFD5"))
+        c.roundRect(0, panel_y, CONTENT, panel_h, 9, fill=1, stroke=1)
+        c.setFillColor(DEEP_BLUE)
+        c.setFont(BODY, 8)
+        c.drawString(14, panel_y + 32, "浏览器页面与结果展示")
+
+        chip_labels = ["风险报告", "情景复盘", "智能回答"]
+        chip_w = 78
+        chip_gap = 8
+        chip_x = CONTENT - 14 - (chip_w * 3 + chip_gap * 2)
+        for index, label in enumerate(chip_labels):
+            x = chip_x + index * (chip_w + chip_gap)
+            c.setFillColor(colors.white)
+            c.setStrokeColor(colors.HexColor("#D2E5EB"))
+            c.roundRect(x, panel_y + 17, chip_w, 22, 6, fill=1, stroke=1)
+            c.setFillColor(MUTED)
+            c.setFont(BODY, 6.5)
+            c.drawCentredString(x + chip_w / 2, panel_y + 25, label)
+
+        connector_x = box_w * 2.5 + gap * 2
+        vertical_arrow(connector_x, box_y - 1, panel_y + panel_h)
         c.setFillColor(MUTED)
-        c.setFont(BODY, 7)
-        c.drawString(12, 45, "浏览器页面")
-        c.drawRightString(CONTENT - 12, 45, "报告 / 情景反馈 / 智能回答")
-        c.line(CONTENT / 2, 104, CONTENT / 2, 74)
-        c.line(CONTENT / 2, 74, CONTENT / 2, 56)
-        c.line(CONTENT / 2 - 3, 61, CONTENT / 2, 56)
-        c.line(CONTENT / 2 + 3, 61, CONTENT / 2, 56)
+        c.setFont(BODY, 6.3)
+        c.drawString(connector_x + 8, panel_y + panel_h + 17, "结构化结果返回页面")
 
 
 def cover(canvas, doc):
