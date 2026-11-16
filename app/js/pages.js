@@ -1,5 +1,5 @@
 (function () {
-  const { computed, onMounted, reactive, ref, watch } = Vue;
+  const { computed, onMounted, onUnmounted, reactive, ref, watch } = Vue;
   const { useRoute, useRouter } = VueRouter;
   const store = window.MingBianStore;
 
@@ -19,6 +19,39 @@
         <p class="page-description">{{ description }}</p>
       </header>
     `,
+  };
+
+  const CountNumber = {
+    props: {
+      value: { type: Number, required: true },
+      duration: { type: Number, default: 760 },
+    },
+    setup(props) {
+      const shown = ref(0);
+      let frame;
+
+      function animate(from = 0) {
+        window.cancelAnimationFrame(frame);
+        const started = performance.now();
+        const target = Number(props.value) || 0;
+        const step = (now) => {
+          const progress = Math.min(1, (now - started) / props.duration);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          shown.value = Math.round(from + (target - from) * eased);
+          if (progress < 1) frame = window.requestAnimationFrame(step);
+        };
+        frame = window.requestAnimationFrame(step);
+      }
+
+      onMounted(() => animate());
+      watch(
+        () => props.value,
+        (next, previous) => animate(Number(previous) || 0),
+      );
+      onUnmounted(() => window.cancelAnimationFrame(frame));
+      return { shown };
+    },
+    template: `<span class="count-number">{{ shown }}</span>`,
   };
 
   const samples = [
@@ -56,15 +89,52 @@
   }
 
   const HomePage = {
-    components: { PageHead },
+    components: { PageHead, CountNumber },
     setup() {
       const profile = computed(() => store.state.profile);
+      const activeIntel = ref(0);
+      const intelItems = [
+        {
+          tag: "刷单返利",
+          level: "高风险",
+          title: "小额返利之后，为什么还要继续垫付？",
+          summary: "当“提现失败”“连单任务”“账户冻结”一起出现时，应停止转账并保存记录。",
+        },
+        {
+          tag: "屏幕共享",
+          level: "高危动作",
+          title: "共享屏幕会暴露什么？",
+          summary: "短信验证码、支付页面和余额都可能被对方看见。正规退款无需远程控制手机。",
+        },
+        {
+          tag: "冒充公检法",
+          level: "重点防范",
+          title: "为什么“保密要求”反而更可疑？",
+          summary: "制造恐惧并阻止你向老师、家人和属地派出所核实，是典型的话术隔离。",
+        },
+        {
+          tag: "虚假投资",
+          level: "高发套路",
+          title: "收益截图为什么不能相信？",
+          summary: "虚假软件可以伪造盈利数字。无法自由提现、继续充值解锁时，应立即止损。",
+        },
+      ];
+      const heatItems = [
+        { name: "诱导转账", value: 92, label: "极高" },
+        { name: "屏幕共享", value: 78, label: "偏高" },
+        { name: "验证码索取", value: 73, label: "偏高" },
+        { name: "陌生链接", value: 61, label: "关注" },
+      ];
       const stats = reactive({
         cases: 11,
         knowledge_types: 15,
         scenarios: 10,
       });
+      let intelTimer;
       onMounted(async () => {
+        intelTimer = window.setInterval(() => {
+          activeIntel.value = (activeIntel.value + 1) % intelItems.length;
+        }, 4200);
         try {
           const data = await store.api("/api/stats");
           Object.assign(stats, data);
@@ -72,7 +142,8 @@
           // The bundled counts remain available if the stats request fails.
         }
       });
-      return { profile, stats };
+      onUnmounted(() => window.clearInterval(intelTimer));
+      return { profile, stats, activeIntel, intelItems, heatItems };
     },
     template: `
       <section class="home-page">
@@ -96,10 +167,90 @@
           </div>
         </div>
 
+        <section class="home-intel-shell" aria-label="校园诈骗训练情报">
+          <div class="intel-board-head">
+            <div>
+              <span class="intel-live-dot"></span>
+              <span>训练情报台</span>
+              <small>基于真实案例与高频套路的动态训练样本</small>
+            </div>
+            <router-link to="/cases">查看真实案例 <app-icon name="arrow"/></router-link>
+          </div>
+          <div class="intel-board-grid">
+            <article class="radar-intel-card">
+              <div class="intel-card-title">
+                <div><span>风险信号</span><strong>校园诈骗雷达</strong></div>
+                <b>训练模型</b>
+              </div>
+              <div class="radar-visual" aria-hidden="true">
+                <span class="radar-ring ring-one"></span>
+                <span class="radar-ring ring-two"></span>
+                <span class="radar-ring ring-three"></span>
+                <span class="radar-axis axis-x"></span>
+                <span class="radar-axis axis-y"></span>
+                <span class="radar-sweep"></span>
+                <i class="radar-dot dot-one"></i>
+                <i class="radar-dot dot-two"></i>
+                <i class="radar-dot dot-three"></i>
+                <em>正在扫描高频话术</em>
+              </div>
+              <div class="radar-footer">
+                <span><i></i>资金诱导</span>
+                <span><i></i>身份冒充</span>
+                <span><i></i>隐私索取</span>
+              </div>
+            </article>
+
+            <article class="intel-feed-card">
+              <div class="intel-feed-top">
+                <span>{{ intelItems[activeIntel].tag }}</span>
+                <b>{{ intelItems[activeIntel].level }}</b>
+              </div>
+              <div class="intel-feed-number">{{ String(activeIntel + 1).padStart(2, '0') }} / 04</div>
+              <transition name="intel-copy" mode="out-in">
+                <div :key="activeIntel" class="intel-feed-copy">
+                  <h3>{{ intelItems[activeIntel].title }}</h3>
+                  <p>{{ intelItems[activeIntel].summary }}</p>
+                </div>
+              </transition>
+              <div class="intel-feed-footer">
+                <div class="intel-dots">
+                  <button
+                    v-for="(_, index) in intelItems"
+                    :key="index"
+                    type="button"
+                    :class="{ active: activeIntel === index }"
+                    :aria-label="'查看第 ' + (index + 1) + ' 条训练情报'"
+                    @click="activeIntel = index"
+                  ></button>
+                </div>
+                <router-link to="/practice">进入演练 <app-icon name="arrow"/></router-link>
+              </div>
+            </article>
+
+            <article class="heat-intel-card">
+              <div class="intel-card-title">
+                <div><span>风险热度</span><strong>本周训练重点</strong></div>
+                <b>训练指数</b>
+              </div>
+              <div class="heat-list">
+                <div v-for="item in heatItems" :key="item.name">
+                  <span>{{ item.name }}</span><b>{{ item.label }}</b>
+                  <i><em :style="{ width: item.value + '%' }"></em></i>
+                </div>
+              </div>
+              <div class="heat-summary">
+                <strong>72%</strong>
+                <span>的校园骗局同时包含<br/>“催促转账”与“不要核实”</span>
+              </div>
+            </article>
+          </div>
+        </section>
+
         <div class="home-stats">
-          <div><strong>{{ stats.cases }}</strong><span>真实案例<br/>新闻直达</span></div>
-          <div><strong>{{ stats.knowledge_types }}</strong><span>高频诈骗<br/>类型知识</span></div>
-          <div><strong>{{ stats.scenarios }}</strong><span>可练习的<br/>互动场景</span></div>
+          <div><strong><count-number :value="stats.cases"/></strong><span>真实案例<br/>新闻直达</span></div>
+          <div><strong><count-number :value="stats.knowledge_types"/></strong><span>高频诈骗<br/>类型知识</span></div>
+          <div><strong><count-number :value="stats.scenarios"/></strong><span>可练习的<br/>互动场景</span></div>
           <div class="profile-snapshot">
             <small>你的当前档案</small>
             <strong>{{ profile.role }} · {{ profile.cautionLevel }}防护</strong>
@@ -660,6 +811,32 @@
       const finished = ref(false);
       const completed = ref(false);
       const chatRef = ref(null);
+      const callSeconds = ref(0);
+      const quickReplies = [
+        "我不会转账，先挂断核实。",
+        "验证码和屏幕共享都不可能提供。",
+        "我会通过官方渠道联系本人确认。",
+        "我已经停止操作，并保存了记录。",
+      ];
+      const activeScenario = computed(
+        () => scenarios.value.find((item) => item.id === selected.value) || scenarios.value[0],
+      );
+      const callTime = computed(() => {
+        const minutes = String(Math.floor(callSeconds.value / 60)).padStart(2, "0");
+        const seconds = String(callSeconds.value % 60).padStart(2, "0");
+        return `${minutes}:${seconds}`;
+      });
+      const pressure = computed(() => Math.max(8, 100 - score.value));
+      const pressureLabel = computed(() => {
+        if (pressure.value >= 70) return "高度施压";
+        if (pressure.value >= 45) return "持续施压";
+        return "逐步冷静";
+      });
+      const pressureTone = computed(() => {
+        if (pressure.value >= 70) return "danger";
+        if (pressure.value >= 45) return "warning";
+        return "safe";
+      });
 
       function chooseScenario(id) {
         selected.value = id;
@@ -671,6 +848,7 @@
         feedback.value = "";
         saferReply.value = "";
         score.value = 72;
+        callSeconds.value = 0;
         finished.value = false;
         completed.value = false;
         messages.value = [];
@@ -722,7 +900,18 @@
         }
       }
 
-      onMounted(start);
+      function fillReply(text) {
+        if (!finished.value) input.value = text;
+      }
+
+      let callTimer;
+      onMounted(() => {
+        start();
+        callTimer = window.setInterval(() => {
+          callSeconds.value += 1;
+        }, 1000);
+      });
+      onUnmounted(() => window.clearInterval(callTimer));
       return {
         scenarios,
         selected,
@@ -735,7 +924,14 @@
         finished,
         completed,
         chatRef,
+        callTime,
+        quickReplies,
+        activeScenario,
+        pressure,
+        pressureLabel,
+        pressureTone,
         chooseScenario,
+        fillReply,
         start,
         send,
       };
@@ -774,9 +970,30 @@
           </aside>
 
           <div class="chat-panel">
-            <div class="chat-head">
-              <div><span class="role-avatar">骗</span><div><strong>模拟对话对象</strong><small>智能角色扮演 · 请保持警觉</small></div></div>
+            <div class="practice-call-head">
+              <div class="call-identity">
+                <div class="call-avatar-wrap">
+                  <span class="role-avatar">骗</span>
+                  <i></i><i></i>
+                </div>
+                <div>
+                  <div class="call-kicker"><span class="call-live-dot"></span>模拟通话进行中 · {{ callTime }}</div>
+                  <strong>疑似诈骗来电</strong>
+                  <small>{{ activeScenario.title }} · {{ activeScenario.label }}</small>
+                </div>
+              </div>
+              <div class="call-wave" aria-hidden="true">
+                <i v-for="index in 9" :key="index" :style="{ animationDelay: (index * 90) + 'ms' }"></i>
+              </div>
               <button type="button" @click="start">重新开始</button>
+            </div>
+            <div class="pressure-strip" :class="pressureTone">
+              <div>
+                <span>对话紧张度</span>
+                <strong>{{ pressureLabel }}</strong>
+              </div>
+              <i><em :style="{ width: pressure + '%' }"></em></i>
+              <b>{{ pressure }}%</b>
             </div>
             <div ref="chatRef" class="chat-stream">
               <article v-for="(message, index) in messages" :key="index" class="chat-message" :class="message.role">
@@ -787,6 +1004,18 @@
                 </div>
               </article>
               <div v-if="loading" class="thinking-line"><i></i><i></i><i></i><span>对方正在输入</span></div>
+            </div>
+            <div class="quick-reply-row">
+              <span>安全话术</span>
+              <button
+                v-for="(reply, index) in quickReplies"
+                :key="reply"
+                type="button"
+                :disabled="finished"
+                @click="fillReply(reply)"
+              >
+                {{ String(index + 1).padStart(2, '0') }} {{ reply }}
+              </button>
             </div>
             <div class="chat-composer">
               <textarea
@@ -808,6 +1037,17 @@
 
           <aside class="coach-panel">
             <span class="rail-label">即时复盘</span>
+            <div class="coach-score-card">
+              <div class="coach-ring" :style="{ '--score': score }">
+                <strong>{{ score }}</strong>
+                <span>安全分</span>
+              </div>
+              <div>
+                <span>当前表现</span>
+                <strong>{{ score >= 80 ? '防线稳固' : score >= 55 ? '仍需警觉' : '风险较高' }}</strong>
+                <p>{{ feedback ? '根据本轮回复实时更新' : '完成一次回复后开始评估' }}</p>
+              </div>
+            </div>
             <div v-if="feedback" class="coach-feedback">
               <p>{{ feedback }}</p>
               <div>
@@ -826,7 +1066,7 @@
   };
 
   const DashboardPage = {
-    components: { PageHead },
+    components: { PageHead, CountNumber },
     setup() {
       const reports = computed(() => store.state.reports);
       const practices = computed(() => store.state.practiceHistory);
@@ -848,15 +1088,68 @@
           .map(([name, count]) => ({ name, count }))
           .sort((a, b) => b.count - a.count);
       });
+      const totalTraining = computed(
+        () => reports.value.length + practices.value.length + challenges.value.length,
+      );
+      const bestChallenge = computed(() =>
+        challenges.value.length ? Math.max(...challenges.value.map((item) => item.score)) : null,
+      );
+      const readiness = computed(() => {
+        const activity = Math.min(totalTraining.value * 4, 32);
+        const practice = Math.min(practices.value.length * 6, 20);
+        const challenge = bestChallenge.value === null ? 0 : Math.round(bestChallenge.value * 0.22);
+        const safety = avgSafety.value ? Math.round(avgSafety.value * 0.16) : 0;
+        return Math.min(100, 28 + activity + practice + challenge + safety);
+      });
+      const readinessLabel = computed(() => {
+        if (readiness.value >= 85) return "反诈先锋";
+        if (readiness.value >= 65) return "警觉达人";
+        if (readiness.value >= 42) return "稳步进阶";
+        return "安全新兵";
+      });
+      const activityDays = computed(() => {
+        const counts = new Map();
+        const records = [
+          ...reports.value.map((item) => item.created_at),
+          ...practices.value.map((item) => item.date),
+          ...challenges.value.map((item) => item.date),
+        ];
+        records.forEach((date) => {
+          if (!date) return;
+          const key = new Date(date).toISOString().slice(0, 10);
+          counts.set(key, (counts.get(key) || 0) + 1);
+        });
+        return Array.from({ length: 14 }, (_, index) => {
+          const date = new Date();
+          date.setHours(12, 0, 0, 0);
+          date.setDate(date.getDate() - (13 - index));
+          const key = date.toISOString().slice(0, 10);
+          return {
+            key,
+            day: date.getDate(),
+            count: counts.get(key) || 0,
+            label: `${date.getMonth() + 1} 月 ${date.getDate()} 日`,
+          };
+        });
+      });
+      const streak = computed(() => {
+        let value = 0;
+        for (let index = activityDays.value.length - 1; index >= 0; index -= 1) {
+          if (!activityDays.value[index].count) break;
+          value += 1;
+        }
+        return value;
+      });
       const achievements = computed(() => [
         { title: "第一次识别", active: reports.value.length > 0, icon: "scan" },
         { title: "完成演练", active: practices.value.length > 0, icon: "shield" },
         { title: "证据阅读者", active: reports.value.some((item) => item.evidence?.length), icon: "news" },
         { title: "连续练习", active: practices.value.length + challenges.value.length >= 3, icon: "spark" },
+        { title: "挑战达人", active: bestChallenge.value !== null && bestChallenge.value >= 80, icon: "target" },
+        { title: "安全高分", active: avgSafety.value >= 80, icon: "chart" },
+        { title: "知识同行", active: store.state.learningProgress.length >= 5, icon: "book" },
+        { title: "训练十次", active: totalTraining.value >= 10, icon: "shield" },
       ]);
-      const bestChallenge = computed(() =>
-        challenges.value.length ? Math.max(...challenges.value.map((item) => item.score)) : null,
-      );
       const challengeSummary = computed(() =>
         challenges.value.length
           ? `已完成 ${challenges.value.length} 次挑战`
@@ -869,6 +1162,11 @@
         avgRisk,
         avgSafety,
         categoryCounts,
+        totalTraining,
+        readiness,
+        readinessLabel,
+        activityDays,
+        streak,
         achievements,
         bestChallenge,
         challengeSummary,
@@ -884,11 +1182,47 @@
           description="这里只保存当前浏览器里的检测摘要与演练记录，不保存你粘贴的完整聊天原文。"
         />
 
+        <section class="growth-hero">
+          <div class="growth-hero-copy">
+            <p class="eyebrow"><span>训练总览</span>你的安全能力正在积累</p>
+            <h2>{{ readinessLabel }}</h2>
+            <p>每一次检测、演练和挑战都会转化为可回顾的训练轨迹。保持警觉，让正确反应成为习惯。</p>
+            <div class="growth-chips">
+              <span><b>{{ totalTraining }}</b> 次训练</span>
+              <span><b>{{ streak }}</b> 天连续</span>
+              <span><b>{{ achievements.filter(item => item.active).length }}</b> 枚徽章</span>
+            </div>
+          </div>
+          <div class="readiness-orbit" :style="{ '--readiness': readiness }">
+            <div>
+              <strong><count-number :value="readiness"/></strong>
+              <span>综合防骗力</span>
+            </div>
+            <i class="orbit-dot dot-a"></i>
+            <i class="orbit-dot dot-b"></i>
+          </div>
+          <div class="activity-panel">
+            <div class="activity-panel-head">
+              <div><span>最近 14 天</span><strong>训练活跃度</strong></div>
+              <b>{{ streak }} 天连续</b>
+            </div>
+            <div class="activity-grid">
+              <span
+                v-for="item in activityDays"
+                :key="item.key"
+                :class="{ level1: item.count === 1, level2: item.count >= 2 }"
+                :title="item.label + '：' + item.count + ' 次训练'"
+              >{{ item.day }}</span>
+            </div>
+            <div class="activity-legend"><span>少</span><i></i><i></i><i></i><span>多</span></div>
+          </div>
+        </section>
+
         <div class="metric-grid">
-          <article><span>可疑消息检测</span><strong>{{ reports.length }}</strong><small>累计完成</small></article>
-          <article><span>情景演练</span><strong>{{ practices.length }}</strong><small>累计完成</small></article>
-          <article><span>平均识别风险</span><strong>{{ avgRisk }}</strong><small>高风险 ≠ 判断错误</small></article>
-          <article><span>演练平均安全分</span><strong>{{ avgSafety || '—' }}</strong><small>目标 80+</small></article>
+          <article><span>可疑消息检测</span><strong><count-number :value="reports.length"/></strong><small>累计完成</small></article>
+          <article><span>情景演练</span><strong><count-number :value="practices.length"/></strong><small>累计完成</small></article>
+          <article><span>平均识别风险</span><strong><count-number :value="avgRisk"/></strong><small>高风险 ≠ 判断错误</small></article>
+          <article><span>演练平均安全分</span><strong><count-number v-if="avgSafety" :value="avgSafety"/><template v-else>—</template></strong><small>目标 80+</small></article>
         </div>
 
         <div class="dashboard-layout">
@@ -1362,7 +1696,7 @@
   };
 
   const ChallengePage = {
-    components: { PageHead },
+    components: { PageHead, CountNumber },
     setup() {
       const loading = ref(true);
       const questions = ref([]);
@@ -1374,6 +1708,32 @@
       const current = computed(() => questions.value[currentIndex.value]);
       const selected = computed(() => (current.value ? answers[current.value.id] : null));
       const progress = computed(() => (questions.value.length ? ((currentIndex.value + 1) / questions.value.length) * 100 : 0));
+      const radarDomains = [
+        { label: "诱饵识别", ids: ["q1", "q9"] },
+        { label: "核验意识", ids: ["q2", "q4"] },
+        { label: "身份判断", ids: ["q3", "q10"] },
+        { label: "隐私边界", ids: ["q8"] },
+        { label: "止付能力", ids: ["q7"] },
+      ];
+      const radarData = computed(() => {
+        if (!result.value) return radarDomains.map((item) => ({ ...item, value: 0 }));
+        return radarDomains.map((item) => {
+          const details = result.value.details.filter((detail) => item.ids.includes(detail.id));
+          const value = details.length
+            ? Math.round((details.filter((detail) => detail.correct).length / details.length) * 100)
+            : 0;
+          return { ...item, value };
+        });
+      });
+      const radarPoints = computed(() =>
+        radarData.value
+          .map((item, index) => {
+            const angle = -Math.PI / 2 + (Math.PI * 2 * index) / radarData.value.length;
+            const radius = 68 * (item.value / 100);
+            return `${(100 + Math.cos(angle) * radius).toFixed(1)},${(92 + Math.sin(angle) * radius).toFixed(1)}`;
+          })
+          .join(" "),
+      );
 
       async function load() {
         loading.value = true;
@@ -1412,6 +1772,7 @@
             body: JSON.stringify({ answers }),
           });
           store.saveChallengeResult(result.value);
+          requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "smooth" }));
         } catch (err) {
           store.showToast(err.message, "error");
         } finally {
@@ -1431,6 +1792,8 @@
         current,
         selected,
         progress,
+        radarData,
+        radarPoints,
         choose,
         next,
         load,
@@ -1449,9 +1812,27 @@
         <div v-else-if="result" class="challenge-result">
           <div class="result-score">
             <span>挑战得分</span>
-            <strong>{{ result.score }}</strong>
+            <div class="score-glow">
+              <strong><count-number :value="result.score"/></strong>
+              <i></i><i></i><i></i>
+            </div>
             <small>{{ result.correct }} / {{ result.total }} 正确</small>
             <b>{{ result.level }}</b>
+            <div class="result-radar-wrap">
+              <svg viewBox="0 0 200 184" aria-label="能力雷达图">
+                <circle cx="100" cy="92" r="68"></circle>
+                <circle cx="100" cy="92" r="45"></circle>
+                <circle cx="100" cy="92" r="22"></circle>
+                <line x1="100" y1="24" x2="100" y2="160"></line>
+                <line x1="32" y1="59" x2="168" y2="125"></line>
+                <line x1="32" y1="125" x2="168" y2="59"></line>
+                <polygon :points="radarPoints"></polygon>
+              </svg>
+              <span>能力雷达</span>
+            </div>
+            <div class="radar-domain-list">
+              <span v-for="item in radarData" :key="item.label">{{ item.label }} <b>{{ item.value }}</b></span>
+            </div>
           </div>
           <div class="result-details">
             <div class="result-heading">
@@ -1472,7 +1853,21 @@
             <div class="challenge-progress"><i :style="{ height: progress + '%' }"></i></div>
             <p>完成后自动计入成长记录</p>
           </aside>
-          <article v-if="current" class="question-card">
+          <transition name="question-swap" mode="out-in">
+          <article v-if="current" :key="current.id" class="question-card">
+            <div class="question-dots">
+              <button
+                v-for="(item, index) in questions"
+                :key="item.id"
+                type="button"
+                :class="{
+                  current: currentIndex === index,
+                  answered: answers[item.id] !== undefined,
+                }"
+                :aria-label="'第 ' + (index + 1) + ' 题'"
+                disabled
+              ></button>
+            </div>
             <div class="question-label"><span>{{ current.category }}</span><b>单选</b></div>
             <h2>{{ current.question }}</h2>
             <div class="answer-list">
@@ -1498,6 +1893,7 @@
               <app-icon name="arrow"/>
             </button>
           </article>
+          </transition>
         </div>
       </section>
     `,

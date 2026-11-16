@@ -384,7 +384,7 @@ def story() -> list:
             "这一分工可以降低模型漏判，也避免网络波动导致演示完全不可用。",
             "MB-Quote",
         ),
-        *shot("home.png", "图 2-2 系统首页：功能定位与三个独立入口"),
+        *shot("home.png", "图 2-2 系统首页：训练情报台、动态风险雷达与独立入口"),
         PageBreak(),
     ]
 
@@ -440,7 +440,7 @@ def story() -> list:
 
     content += [
         *block("05 情景演练", "智能模型不是答题器，它要制造可控制的压力。"),
-        *shot("practice.png", "图 5-1 情景、聊天与即时复盘三栏工作台", CONTENT - 5),
+        *shot("practice.png", "图 5-1 模拟来电、紧张度、安全话术与即时复盘三栏工作台", CONTENT - 5),
         p(
             "用户可从 10 个校园高频场景中选择，智能模型以虚构诈骗角色持续施压。每次回复后，系统给出风险反馈、"
             "更安全的表达和安全分变化。场景禁止使用真实账户、电话或可执行诈骗资源。",
@@ -494,6 +494,8 @@ def story() -> list:
         *shot("academy.png", "图 8-1 知识训练中心", CONTENT - 5),
         *shot("challenge.png", "图 8-2 每日安全挑战", CONTENT - 5),
         PageBreak(),
+        *shot("challenge-result.png", "图 8-3 挑战结果、能力雷达与逐题复盘"),
+        PageBreak(),
         *block("09 安全与隐私", "反诈产品自身必须先守住边界。"),
         table(
             [
@@ -508,7 +510,7 @@ def story() -> list:
             [165, 270],
         ),
         Spacer(1, 12),
-        *shot("dashboard.png", "图 9-1 成长记录页：本地统计、风险分布和徽章"),
+        *shot("dashboard.png", "图 9-1 成长记录页：综合防骗力、训练活跃度、风险分布和徽章"),
         PageBreak(),
     ]
 
