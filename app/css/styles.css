@@ -6116,52 +6116,29 @@ body {
   z-index: 4;
   display: grid;
   place-items: center;
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
   padding: 0;
-  border: 2px solid white;
+  border: 2px solid rgba(255, 255, 255, 0.94);
   border-radius: 50%;
   background: var(--orange);
+  color: white;
   cursor: pointer;
   box-shadow: 0 0 0 5px rgba(240, 108, 67, 0.16);
   transition: transform 180ms ease, box-shadow 180ms ease;
 }
 
-.radar-dot > i {
-  display: block;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: white;
-}
-
 .radar-dot > span {
-  position: absolute;
-  top: 50%;
-  left: 19px;
-  padding: 2px 4px;
-  border: 1px solid rgba(47, 120, 152, 0.12);
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.92);
-  color: #315f72;
+  color: inherit;
   font-size: 7px;
-  font-weight: 700;
-  line-height: 1.15;
-  white-space: nowrap;
-  pointer-events: none;
-  transform: translateY(-50%);
-  box-shadow: 0 2px 7px rgba(45, 110, 136, 0.08);
-}
-
-.radar-dot.label-left > span {
-  right: 19px;
-  left: auto;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .radar-dot:hover,
 .radar-dot.active {
   z-index: 6;
-  transform: scale(1.12);
+  transform: scale(1.18);
   box-shadow: 0 0 0 7px rgba(240, 108, 67, 0.16);
 }
 
@@ -6187,8 +6164,6 @@ body {
 .signal-four {
   top: 101px;
   right: 20px;
-  width: 13px;
-  height: 13px;
   background: #d49d43;
   box-shadow: 0 0 0 5px rgba(212, 157, 67, 0.15);
 }
@@ -6217,8 +6192,6 @@ body {
 .signal-eight {
   top: 53px;
   left: 7px;
-  width: 13px;
-  height: 13px;
   background: #9d7ba8;
   box-shadow: 0 0 0 5px rgba(157, 123, 168, 0.14);
 }
@@ -6314,9 +6287,9 @@ body {
 .radar-footer {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6px 10px;
-  margin-top: 14px;
-  padding-top: 12px;
+  gap: 6px 12px;
+  margin-top: 7px;
+  padding-top: 8px;
   border-top: 1px solid rgba(45, 113, 143, 0.11);
   color: #4e7080;
   font-size: 9px;
@@ -6325,7 +6298,7 @@ body {
 .radar-footer button {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   padding: 0;
   border: 0;
   background: transparent;
@@ -6334,28 +6307,50 @@ body {
   text-align: left;
 }
 
-.radar-footer i {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--orange);
+.radar-footer em {
+  display: grid;
+  place-items: center;
+  width: 19px;
+  height: 16px;
+  border-radius: 4px;
+  background: rgba(240, 108, 67, 0.14);
+  color: #a84d34;
+  font-size: 7px;
+  font-style: normal;
+  font-weight: 800;
 }
 
-.radar-footer button:nth-child(2) i {
-  background: #3d8eab;
+.radar-footer button:nth-child(2) em {
+  background: rgba(61, 142, 171, 0.14);
+  color: #2f738c;
 }
 
-.radar-footer button:nth-child(3) i {
-  background: #68a991;
+.radar-footer button:nth-child(3) em {
+  background: rgba(104, 169, 145, 0.16);
+  color: #397c68;
 }
 
-.radar-footer button:nth-child(4) i {
-  background: #d49d43;
+.radar-footer button:nth-child(4) em {
+  background: rgba(212, 157, 67, 0.16);
+  color: #8c681e;
 }
 
 .radar-footer button.active {
   color: #1d5872;
   font-weight: 800;
+}
+
+.radar-footer button.active em {
+  background: #2f7898;
+  color: white;
+}
+
+.radar-legend-hint {
+  display: block;
+  margin-top: 10px;
+  color: #66818d;
+  font-size: 8px;
+  text-align: right;
 }
 
 .intel-feed-top {
