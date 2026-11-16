@@ -958,23 +958,11 @@
       };
     },
     template: `
-      <section class="login-page">
-        <div class="login-visual">
-          <router-link class="login-brand" to="/">
-            <span class="brand-symbol"><i></i><i></i></span>
-            <span><b>智能反诈训练系统</b></span>
-          </router-link>
-          <div class="login-copy">
-            <p class="eyebrow"><span>09</span>账户与训练档案</p>
+      <section class="login-page login-centered">
+        <div class="login-card">
+          <div class="login-simple-head">
             <h1>登录与注册</h1>
-            <p>登录后可保存检测报告、每日挑战成绩和情景演练记录。账户与数据仅保存在当前浏览器。</p>
           </div>
-          <div class="login-orbit" aria-hidden="true">
-            <span>停止</span><span>核验</span><span>保存
-            <i></i><i></i><i></i>
-          </div>
-        </div>
-        <div class="login-panel">
           <div v-if="store.state.auth.user" class="session-card">
             <span>当前已登录</span>
             <strong>{{ store.state.auth.user.guest ? 'test' : store.state.auth.user.nickname }}</strong>
@@ -986,11 +974,6 @@
             <div class="login-tabs">
               <button type="button" :class="{ active: mode === 'login' }" @click="switchMode('login')">登录</button>
               <button type="button" :class="{ active: mode === 'register' }" @click="switchMode('register')">创建账户</button>
-            </div>
-            <div class="login-heading">
-              <span>{{ mode === 'login' ? '欢迎回来' : '创建账户' }}</span>
-              <h2>{{ mode === 'login' ? '继续你的防骗训练。' : '建立你的本地安全档案。' }}</h2>
-              <p>{{ mode === 'login' ? '使用当前浏览器注册的账户继续。' : '无需手机号，不会上传真实身份信息。' }}</p>
             </div>
             <form class="login-form" @submit.prevent="submit">
               <label v-if="mode === 'register'">
