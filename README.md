@@ -4,6 +4,8 @@
 
 明辨是一款面向大学生的 AI 反诈训练 Web 应用。它不是一张把全部功能堆在一起的长页面，而是一个基于 **Vue 3 + Vue Router** 的多路由应用，将风险检测、报告阅读、情景演练、真实案例、成长记录和 AI 助手拆成独立页面。
 
+技术文档：[MingBian-technical-document.pdf](docs/MingBian-technical-document.pdf)
+
 ## 产品功能
 
 - **可疑消息体检**：逐句识别返利、垫付、屏幕共享、验证码和二次转账等风险信号。
