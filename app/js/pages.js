@@ -80,44 +80,6 @@
                 开始情景演练
               </router-link>
             </div>
-            <div class="hero-note">
-              <span>本地存储</span>
-              <span>模型前脱敏</span>
-              <span>不索取真实密码</span>
-            </div>
-          </div>
-
-          <div class="threat-visual">
-            <div class="visual-grid"></div>
-            <div class="message-terminal">
-              <div class="terminal-head">
-                <span class="terminal-dot"></span>
-                <span>未知联系人</span>
-                <span class="terminal-risk">高风险</span>
-              </div>
-              <div class="terminal-message">
-                <p>系统显示你的账户被冻结。</p>
-                <p class="flagged">请先转账 <mark>980 元</mark> 解冻。</p>
-                <p>然后打开屏幕共享，我帮你处理。</p>
-              </div>
-              <div class="terminal-scan">
-                <span><i></i> 屏幕共享请求</span>
-                <strong>+18</strong>
-              </div>
-              <div class="terminal-scan">
-                <span><i></i> 二次转账话术</span>
-                <strong>+16</strong>
-              </div>
-            </div>
-            <div class="risk-bubble">
-              <small>已识别</small>
-              <strong>刷单返利</strong>
-              <span>96 / 100</span>
-            </div>
-            <div class="trace-bubble">
-              <app-icon name="spark" />
-              <span>智能分析正在核对证据</span>
-            </div>
           </div>
         </div>
 
@@ -1331,6 +1293,12 @@
     components: { PageHead },
     setup() {
       const form = reactive({ ...store.state.profile });
+      const identityOptions = [
+        { value: "在校学生", detail: "本科在校学习" },
+        { value: "应届毕业生", detail: "正在求职或签约" },
+        { value: "研究生", detail: "硕士或博士阶段" },
+        { value: "老师/辅导员", detail: "学生工作与就业指导" },
+      ];
       const scenarioOptions = ["兼职招聘", "二手交易", "游戏交易", "票务演出", "校园贷款", "冒充老师"];
       const levels = ["轻提醒", "标准", "严格"];
 
@@ -1344,7 +1312,7 @@
         store.saveProfile(form);
       }
 
-      return { form, scenarioOptions, levels, toggleScenario, save };
+      return { form, identityOptions, scenarioOptions, levels, toggleScenario, save };
     },
     template: `
       <section class="workspace-page profile-page">
@@ -1360,15 +1328,22 @@
               <span>我们怎么称呼你</span>
               <input v-model="form.nickname" maxlength="16" placeholder="例如：小林" />
             </label>
-            <label>
+            <div class="form-group identity-field">
               <span>当前身份</span>
-              <select v-model="form.role">
-                <option>在校学生</option>
-                <option>应届毕业生</option>
-                <option>研究生</option>
-                <option>老师/辅导员</option>
-              </select>
-            </label>
+              <div class="identity-grid">
+                <button
+                  v-for="identity in identityOptions"
+                  :key="identity.value"
+                  type="button"
+                  :class="{ selected: form.role === identity.value }"
+                  @click="form.role = identity.value"
+                >
+                  <b>{{ identity.value }}</b>
+                  <small>{{ identity.detail }}</small>
+                  <i>{{ form.role === identity.value ? '✓' : '' }}</i>
+                </button>
+              </div>
+            </div>
             <div class="form-group">
               <span>经常接触的场景</span>
               <div class="choice-grid">

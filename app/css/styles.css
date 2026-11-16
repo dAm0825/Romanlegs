@@ -460,14 +460,21 @@ svg {
 }
 
 .home-hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(460px, 0.95fr);
-  align-items: center;
-  gap: 60px;
-  width: min(1360px, calc(100% - 96px));
-  min-height: 610px;
+  display: block;
+  width: min(980px, calc(100% - 96px));
+  min-height: 470px;
   margin: 0 auto;
-  padding: 60px 0 48px;
+  padding: 78px 0 64px;
+  text-align: center;
+}
+
+.hero-text {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.hero-text .eyebrow {
+  justify-content: center;
 }
 
 .hero-text h1 {
@@ -499,7 +506,7 @@ svg {
 
 .hero-description {
   max-width: 620px;
-  margin: 25px 0 0;
+  margin: 25px auto 0;
   color: var(--muted);
   font-size: 14px;
   line-height: 1.9;
@@ -510,6 +517,7 @@ svg {
   align-items: center;
   gap: 12px;
   margin-top: 30px;
+  justify-content: center;
 }
 
 .primary-button,
@@ -577,6 +585,15 @@ svg {
   flex-wrap: wrap;
   gap: 7px;
   margin-top: 25px;
+}
+
+.feature-section .section-title {
+  display: block;
+  text-align: center;
+}
+
+.feature-section .section-title .eyebrow {
+  justify-content: center;
 }
 
 .hero-note span {
@@ -2906,6 +2923,70 @@ svg {
   grid-column: 1 / -1;
 }
 
+.identity-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.identity-grid button {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 72px;
+  padding: 13px 40px 13px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+  cursor: pointer;
+  text-align: left;
+}
+
+.identity-grid button:hover {
+  border-color: var(--night-3);
+}
+
+.identity-grid button.selected {
+  border-color: var(--night);
+  background: var(--night);
+  color: white;
+}
+
+.identity-grid b {
+  font-size: 14px;
+}
+
+.identity-grid small {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.identity-grid button.selected small {
+  color: rgba(255, 255, 255, 0.58);
+}
+
+.identity-grid i {
+  position: absolute;
+  top: 13px;
+  right: 14px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(7, 27, 39, 0.07);
+  color: transparent;
+  font-size: 12px;
+  font-style: normal;
+}
+
+.identity-grid button.selected i {
+  background: var(--lime);
+  color: var(--night);
+}
+
 .choice-grid {
   display: flex;
   flex-wrap: wrap;
@@ -4365,6 +4446,10 @@ svg {
   }
 
   .course-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .identity-grid {
     grid-template-columns: 1fr;
   }
 
