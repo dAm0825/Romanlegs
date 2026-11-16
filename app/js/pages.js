@@ -116,7 +116,7 @@
             <router-link class="feature-card feature-scan" to="/scan">
               <span class="feature-index">01</span>
               <div class="feature-icon"><app-icon name="scan"/></div>
-              <h3>可疑消息体检</h3>
+              <h3>可疑消息检测</h3>
               <p>逐句标出返利、恐吓、屏幕共享和二次转账信号，给出可核验的依据。</p>
               <span class="feature-link">打开检测页 <app-icon name="arrow"/></span>
             </router-link>
