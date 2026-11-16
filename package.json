@@ -1,8 +1,8 @@
 {
-  "name": "mingbian",
+  "name": "anti-fraud-training-system",
   "private": true,
   "version": "1.0.0",
-  "description": "明辨 AI 校园反诈陪练",
+  "description": "智能反诈训练系统",
   "scripts": {
     "dev": "python3 server/app.py",
     "test": "python3 -m unittest discover -s tests -v"

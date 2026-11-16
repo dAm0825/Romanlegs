@@ -59,7 +59,20 @@
     components: { PageHead },
     setup() {
       const profile = computed(() => store.state.profile);
-      return { profile };
+      const stats = reactive({
+        cases: 11,
+        knowledge_types: 15,
+        scenarios: 10,
+      });
+      onMounted(async () => {
+        try {
+          const data = await store.api("/api/stats");
+          Object.assign(stats, data);
+        } catch {
+          // The bundled counts remain available if the stats request fails.
+        }
+      });
+      return { profile, stats };
     },
     template: `
       <section class="home-page">
@@ -84,9 +97,9 @@
         </div>
 
         <div class="home-stats">
-          <div><strong>5</strong><span>真实案例<br/>新闻直达</span></div>
-          <div><strong>6</strong><span>高频诈骗<br/>类型知识</span></div>
-          <div><strong>3</strong><span>可练习的<br/>互动场景</span></div>
+          <div><strong>{{ stats.cases }}</strong><span>真实案例<br/>新闻直达</span></div>
+          <div><strong>{{ stats.knowledge_types }}</strong><span>高频诈骗<br/>类型知识</span></div>
+          <div><strong>{{ stats.scenarios }}</strong><span>可练习的<br/>互动场景</span></div>
           <div class="profile-snapshot">
             <small>你的当前档案</small>
             <strong>{{ profile.role }} · {{ profile.cautionLevel }}防护</strong>
@@ -148,9 +161,26 @@
       const selectedSample = ref(0);
       const loading = ref(false);
       const error = ref("");
-      const stage = ref(0);
-      const stages = ["隐私脱敏", "风险特征识别", "知识库检索", "生成行动建议"];
-      let stageTimer;
+      const activeReport = ref(null);
+      const checkedActions = reactive({});
+      const reports = computed(() => store.state.reports);
+      const highRiskCount = computed(() => reports.value.filter((item) => item.score >= 75).length);
+      const todayCount = computed(() => {
+        const today = new Date().toDateString();
+        return reports.value.filter((item) => new Date(item.created_at).toDateString() === today).length;
+      });
+      const latestDate = computed(() =>
+        reports.value.length
+          ? new Date(reports.value[0].created_at).toLocaleDateString("zh-CN")
+          : "暂无记录",
+      );
+      const modalTasks = computed(() => activeReport.value?.actions?.slice(0, 4) || []);
+      const taskProgress = computed(() => {
+        if (!modalTasks.value.length) return 0;
+        return Math.round(
+          (modalTasks.value.filter((_, index) => checkedActions[index]).length / modalTasks.value.length) * 100,
+        );
+      });
 
       function loadSample(index) {
         selectedSample.value = index;
@@ -165,23 +195,32 @@
         }
         loading.value = true;
         error.value = "";
-        stage.value = 0;
-        stageTimer = setInterval(() => {
-          stage.value = Math.min(stage.value + 1, stages.length - 1);
-        }, 650);
         try {
           const result = await store.api("/api/detect", {
             method: "POST",
             body: JSON.stringify({ message: message.value }),
           });
           store.saveReport({ ...result, source_message: message.value });
-          await router.push(`/report/${result.id}`);
+          openDetail({ ...result, source_message: message.value });
         } catch (err) {
           error.value = err.message;
         } finally {
-          clearInterval(stageTimer);
           loading.value = false;
         }
+      }
+
+      function openDetail(report) {
+        activeReport.value = report;
+        Object.keys(checkedActions).forEach((key) => delete checkedActions[key]);
+      }
+
+      function closeDetail() {
+        activeReport.value = null;
+      }
+
+      function goToReport() {
+        if (!activeReport.value) return;
+        router.push(`/report/${activeReport.value.id}`);
       }
 
       return {
@@ -190,10 +229,20 @@
         samples,
         loading,
         error,
-        stage,
-        stages,
+        reports,
+        highRiskCount,
+        todayCount,
+        latestDate,
+        activeReport,
+        checkedActions,
+        modalTasks,
+        taskProgress,
+        scoreTone,
         loadSample,
         detect,
+        openDetail,
+        closeDetail,
+        goToReport,
       };
     },
     template: `
@@ -201,13 +250,36 @@
         <page-head
           index="02"
           eyebrow="可疑消息检测"
-          title="这条消息，哪里不对劲？"
-          description="粘贴聊天记录、短信或招聘信息，识别高风险话术和可疑操作。"
+          title="风险检测工作台"
+          description="分析可疑消息，核对高风险话术，并查看最近检测记录与后续行动。"
         />
-        <div class="scan-layout">
+        <div class="scan-metrics">
+          <article>
+            <span>今日检测</span>
+            <strong>{{ todayCount }}</strong>
+            <small>新增消息</small>
+          </article>
+          <article>
+            <span>高风险记录</span>
+            <strong>{{ highRiskCount }}</strong>
+            <small>累计识别</small>
+          </article>
+          <article>
+            <span>检测总数</span>
+            <strong>{{ reports.length }}</strong>
+            <small>保存在本机</small>
+          </article>
+          <article>
+            <span>最近检测</span>
+            <strong class="date-value">{{ latestDate }}</strong>
+            <small>最近一次记录</small>
+          </article>
+        </div>
+
+        <div class="scan-workbench">
           <div class="composer-card">
             <div class="card-label">
-              <span>可疑消息</span>
+              <span>粘贴需要核验的内容</span>
               <span class="privacy-badge">本地脱敏</span>
             </div>
             <div class="sample-tabs">
@@ -232,30 +304,104 @@
             </div>
             <p v-if="error" class="form-error">{{ error }}</p>
             <button class="analyze-primary" type="button" :disabled="loading" @click="detect">
-              <span>{{ loading ? '正在拆解' : '开始风险体检' }}</span>
+              <span>{{ loading ? '正在检测' : '开始风险检测' }}</span>
               <app-icon name="arrow" />
             </button>
           </div>
 
-          <aside class="scan-aside">
-            <div class="aside-head">
-              <span>分析过程</span>
-              <i :class="{ live: loading }"></i>
+          <aside class="scan-side-stack">
+            <div class="quick-detection-card">
+              <span class="side-card-label">快捷检测</span>
+              <h3>常见风险模板</h3>
+              <div class="quick-risk-list">
+                <button
+                  v-for="(sample, index) in samples"
+                  :key="sample.label"
+                  type="button"
+                  @click="loadSample(index)"
+                >
+                  <span>0{{ index + 1 }}</span>
+                  <b>{{ sample.label }}</b>
+                  <i>→</i>
+                </button>
+              </div>
             </div>
-            <ol class="scan-stages">
-              <li v-for="(item, index) in stages" :key="item" :class="{ done: !loading && stage >= index, active: loading && stage === index }">
-                <span>0{{ index + 1 }}</span>
-                <div><b>{{ item }}</b><small>{{ ['遮蔽敏感字段', '定位高风险话术', '匹配知识与真实案例', '整理核验和止损步骤'][index] }}</small></div>
-              </li>
-            </ol>
-            <div class="scan-principles">
-              <strong>三条判断底线</strong>
-              <p>验证码不给</p>
-              <p>屏幕不共享</p>
-              <p>钱不转给陌生账户</p>
+            <div class="safety-reminder-card">
+              <strong>三不原则</strong>
+              <div><span>01</span>验证码不给</div>
+              <div><span>02</span>屏幕不共享</div>
+              <div><span>03</span>钱不转陌生账户</div>
             </div>
           </aside>
         </div>
+
+        <section class="recent-detections">
+          <div class="recent-head">
+            <div><span>检测记录</span><h2>最近的消息检查</h2></div>
+            <span>点击任意记录查看详情</span>
+          </div>
+          <div v-if="reports.length" class="detection-table">
+            <button
+              v-for="item in reports.slice(0, 6)"
+              :key="item.id"
+              type="button"
+              @click="openDetail(item)"
+            >
+              <span class="risk-score-pill" :class="scoreTone(item.score)">{{ item.score }}</span>
+              <div>
+                <strong>{{ item.category }}</strong>
+                <small>{{ new Date(item.created_at).toLocaleString('zh-CN') }}</small>
+              </div>
+              <span>{{ item.level }}</span>
+              <span>{{ item.findings?.length || item.signals?.length || 0 }} 项发现</span>
+              <app-icon name="arrow"/>
+            </button>
+          </div>
+          <div v-else class="recent-empty">
+            <p>还没有检测记录。载入一个示例，开始第一次风险检测。</p>
+          </div>
+        </section>
+
+        <transition name="modal">
+          <div v-if="activeReport" class="modal-backdrop" @click.self="closeDetail">
+            <article class="detection-modal" role="dialog" aria-modal="true" aria-labelledby="detectionModalTitle">
+              <header>
+                <div>
+                  <span>{{ activeReport.level }}</span>
+                  <h2 id="detectionModalTitle">{{ activeReport.category }}</h2>
+                  <p>{{ new Date(activeReport.created_at).toLocaleString('zh-CN') }}</p>
+                </div>
+                <button type="button" aria-label="关闭弹窗" @click="closeDetail">×</button>
+              </header>
+              <p class="modal-summary">{{ activeReport.summary }}</p>
+              <div class="modal-progress">
+                <div><span>行动核对进度</span><strong>{{ taskProgress }}%</strong></div>
+                <i><b :style="{ width: taskProgress + '%' }"></b></i>
+              </div>
+              <div class="modal-columns">
+                <div class="modal-signal-list">
+                  <h3>风险发现</h3>
+                  <div v-for="signal in (activeReport.signals || []).slice(0, 4)" :key="signal.keyword">
+                    <span>{{ signal.keyword }}</span>
+                    <p>{{ signal.quote }}</p>
+                  </div>
+                </div>
+                <div class="modal-task-list">
+                  <h3>建议行动</h3>
+                  <label v-for="(action, index) in modalTasks" :key="index">
+                    <input v-model="checkedActions[index]" type="checkbox" />
+                    <span class="modal-check"></span>
+                    <p>{{ action }}</p>
+                  </label>
+                </div>
+              </div>
+              <footer>
+                <button type="button" class="modal-secondary" @click="closeDetail">关闭</button>
+                <button type="button" class="modal-primary" @click="goToReport">查看完整报告 <app-icon name="arrow"/></button>
+              </footer>
+            </article>
+          </div>
+        </transition>
       </section>
     `,
   };
@@ -496,6 +642,13 @@
         { id: "part-time", title: "高薪兼职", label: "刷单返利" },
         { id: "customer", title: "客服退款", label: "冒充电商客服" },
         { id: "scholarship", title: "奖学金认证", label: "冒充老师/机构" },
+        { id: "authority", title: "假警察来电", label: "冒充公检法" },
+        { id: "loan", title: "注销校园贷", label: "征信诈骗" },
+        { id: "ticket", title: "低价演唱会票", label: "虚假票务" },
+        { id: "game", title: "游戏账号交易", label: "虚假平台" },
+        { id: "investment", title: "高收益投资", label: "虚假投资理财" },
+        { id: "friend", title: "熟人在线求助", label: "冒充熟人" },
+        { id: "merch", title: "免费明星周边", label: "粉丝福利诈骗" },
       ]);
       const selected = ref(route.query.scenario || "part-time");
       const messages = ref([]);
@@ -611,7 +764,7 @@
               :class="{ active: selected === item.id }"
               @click="chooseScenario(item.id)"
             >
-              <span>0{{ index + 1 }}</span>
+              <span>{{ String(index + 1).padStart(2, '0') }}</span>
               <div><strong>{{ item.title }}</strong><small>{{ item.label }}</small></div>
             </button>
             <div class="practice-rules">
@@ -1064,6 +1217,78 @@
       principles: ["只使用官方交易渠道", "另行打开官网核验平台真实性", "拒绝保证金、解冻费和验资款"],
       warning: "支付成功截图不是资金到账的证明。",
     },
+    {
+      id: "recruitment",
+      title: "兼职招聘收费",
+      code: "07",
+      summary: "以日结和轻松工作吸引报名，再层层收取费用。",
+      principles: ["正规招聘不会在入职前收取培训费、服装费或押金", "高薪低门槛与立即上岗需要格外警惕", "工作内容、公司和收款主体应能独立核验"],
+      warning: "任何入职前先交钱的兼职都应立即退出。",
+    },
+    {
+      id: "red-lines",
+      title: "高风险操作红线",
+      code: "08",
+      summary: "验证码、屏幕共享和远程控制会让账户失去保护。",
+      principles: ["短信验证码等同于账户钥匙", "屏幕共享可能暴露短信、密码和余额", "不要安装陌生人发来的远程控制软件"],
+      warning: "对方越急着让你共享屏幕，越要先停下来核实。",
+    },
+    {
+      id: "emergency",
+      title: "疑似被骗应急处置",
+      code: "09",
+      summary: "先止损、再留证、后报警，不要继续与骗子周旋。",
+      principles: ["立即停止转账并联系银行申请止付", "保存聊天、订单、账户和转账记录", "拨打 110 或联系学校保卫部门寻求帮助"],
+      warning: "不要寻找收费的“网络追款专家”，避免二次受骗。",
+    },
+    {
+      id: "verification",
+      title: "官方渠道核验",
+      code: "10",
+      summary: "不点击对方发来的链接，不按对方给的号码求证。",
+      principles: ["优先通过自己已知的官方 App 或网站核验", "不要使用陌生人提供的客服电话和二维码", "涉及资金时同时联系银行和身边的可信人员"],
+      warning: "用骗子的入口核验骗子，只会得到被设计好的答案。",
+    },
+    {
+      id: "investment",
+      title: "虚假投资理财",
+      code: "11",
+      summary: "收益截图和内部名额只是让人追加资金的诱饵。",
+      principles: ["高收益、稳赚不赔本身就是危险信号", "不要下载网友发来的投资软件或安装包", "无法正常提现时应立即停止充值并保存证据"],
+      warning: "群里晒收益的人，可能和“顾问”是一伙的。",
+    },
+    {
+      id: "acquaintance",
+      title: "冒充熟人",
+      code: "12",
+      summary: "头像、昵称和聊天语气都可能被复制。",
+      principles: ["熟人账号借钱必须通过电话或视频独立确认", "不要仅凭语音片段判断对方身份", "紧急、保密和催促转账是常见施压方式"],
+      warning: "帮熟人之前，先用你原本保存的联系方式确认本人。",
+    },
+    {
+      id: "training-refund",
+      title: "教育培训退费",
+      code: "13",
+      summary: "假退费专员会用陌生软件和保证金套取资金。",
+      principles: ["退费通常通过原购买渠道办理", "不要从短信链接下载陌生软件", "正规退费不会要求先缴保证金或手续费"],
+      warning: "先交钱才能退钱的流程不符合正常退费逻辑。",
+    },
+    {
+      id: "financial-aid",
+      title: "奖助学金诈骗",
+      code: "14",
+      summary: "冒充老师或资助人员，以发放补助为由索要费用。",
+      principles: ["奖助学金通知应通过学校官方渠道确认", "正规资助不会要求学生先缴手续费", "不要把银行卡和验证码交给个人代为激活"],
+      warning: "涉及奖助学金时，直接联系辅导员或学校资助中心。",
+    },
+    {
+      id: "fan-benefit",
+      title: "粉丝福利诈骗",
+      code: "15",
+      summary: "免费周边和明星福利常被包装成助力、返现任务。",
+      principles: ["不要为所谓免费周边先购买商品", "后援会名额和签名专辑应通过官方活动核实", "支付密码、验证码不能用于证明粉丝身份"],
+      warning: "先消费再返现的福利任务，本质仍是刷单骗局。",
+    },
   ];
 
   const AcademyPage = {
@@ -1090,7 +1315,7 @@
           index="10"
           eyebrow="知识训练"
           title="反诈知识训练"
-          description="六个短课覆盖校园最高频的反诈主题。每个模块只讲关键判断，不堆成长篇宣传文章。"
+          description="十五个短课覆盖校园高频反诈主题。每个模块只讲关键判断，不堆成长篇宣传文章。"
         />
         <div class="academy-progress">
           <div><span>你的学习进度</span><strong>{{ progress }}%</strong></div>
