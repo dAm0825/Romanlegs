@@ -1293,10 +1293,12 @@
     components: { PageHead },
     setup() {
       const form = reactive({ ...store.state.profile });
+      if (form.role === "在校学生") form.role = "本科生";
+      if (form.role === "研究生") form.role = "研究生或博士生";
       const identityOptions = [
-        { value: "在校学生", detail: "本科在校学习" },
+        { value: "本科生", detail: "本科阶段在读" },
         { value: "应届毕业生", detail: "正在求职或签约" },
-        { value: "研究生", detail: "硕士或博士阶段" },
+        { value: "研究生或博士生", detail: "硕士或博士阶段" },
         { value: "老师/辅导员", detail: "学生工作与就业指导" },
       ];
       const scenarioOptions = ["兼职招聘", "二手交易", "游戏交易", "票务演出", "校园贷款", "冒充老师"];

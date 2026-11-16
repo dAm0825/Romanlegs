@@ -1,19 +1,19 @@
 :root {
-  --night: #071b27;
-  --night-2: #0c2635;
-  --night-3: #123747;
-  --paper: #f4f1e9;
-  --paper-2: #eae4d8;
-  --surface: #fbfaf6;
-  --ink: #15251f;
-  --muted: #60706a;
+  --night: #cfe7f3;
+  --night-2: #bddcea;
+  --night-3: #347c9c;
+  --paper: #f6f4ee;
+  --paper-2: #e9e5dc;
+  --surface: #fffdf9;
+  --ink: #183743;
+  --muted: #5d7885;
   --lime: #cceb72;
   --mint: #79d1b5;
   --orange: #f06c43;
   --yellow: #e6b852;
   --red: #d84d40;
-  --line: rgba(7, 27, 39, 0.14);
-  --line-dark: rgba(255, 255, 255, 0.14);
+  --line: rgba(24, 55, 67, 0.14);
+  --line-dark: rgba(24, 55, 67, 0.14);
   --shadow: 0 26px 70px rgba(7, 27, 39, 0.14);
   --sans: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
   --serif: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
@@ -4889,6 +4889,367 @@ body {
   .practice-top h1 {
     font-size: 30px;
   }
+}
+
+/* Light-blue visual system */
+.home-page {
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(circle at 50% 20%, rgba(144, 205, 230, 0.32), transparent 32%),
+    radial-gradient(circle at 12% 72%, rgba(193, 231, 224, 0.4), transparent 25%),
+    radial-gradient(circle at 88% 68%, rgba(248, 203, 156, 0.2), transparent 22%),
+    linear-gradient(135deg, rgba(255, 253, 248, 0.62), rgba(232, 246, 251, 0.55), rgba(249, 243, 232, 0.64));
+}
+
+.home-hero {
+  position: relative;
+  isolation: isolate;
+}
+
+.home-hero::before,
+.home-hero::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  border: 1px solid rgba(52, 124, 156, 0.14);
+  border-radius: 50%;
+}
+
+.home-hero::before {
+  top: 82px;
+  left: -80px;
+  width: 260px;
+  height: 260px;
+}
+
+.home-hero::after {
+  right: -65px;
+  bottom: 22px;
+  width: 190px;
+  height: 190px;
+  background: rgba(201, 235, 247, 0.18);
+}
+
+.top-shell {
+  background: rgba(221, 241, 250, 0.97);
+  color: var(--ink);
+  border-bottom: 1px solid rgba(35, 96, 121, 0.16);
+  box-shadow: 0 8px 24px rgba(53, 121, 149, 0.08);
+}
+
+.brand-symbol,
+.mobile-menu {
+  border-color: rgba(24, 55, 67, 0.55);
+}
+
+.brand-symbol::before,
+.brand-symbol::after,
+.mobile-menu span {
+  background: var(--ink);
+}
+
+.profile-button {
+  border-color: rgba(24, 55, 67, 0.2);
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.profile-button svg {
+  color: var(--muted);
+}
+
+.profile-popover {
+  border-color: rgba(24, 55, 67, 0.14);
+  background: #f8fcff;
+  color: var(--ink);
+}
+
+.profile-popover > span,
+.profile-popover small,
+.profile-popover > button {
+  color: var(--muted);
+}
+
+.profile-popover a {
+  border-top-color: var(--line);
+  color: #216b8a;
+}
+
+.main-nav {
+  border-top-color: rgba(24, 55, 67, 0.1);
+}
+
+.nav-item {
+  color: #4c6b79;
+}
+
+.nav-item:hover {
+  color: var(--ink);
+  background: rgba(72, 144, 173, 0.07);
+}
+
+.nav-item.active {
+  color: #1e6482;
+}
+
+.nav-item::after {
+  background: #4a9aba;
+}
+
+.primary-button,
+.analyze-primary,
+.login-submit {
+  background: #2f7898;
+}
+
+.sample-tabs button.active,
+.severity-filters button.active,
+.case-filter button.active,
+.choice-grid button.selected,
+.level-options button.selected,
+.course-grid > button.active,
+.identity-grid button.selected {
+  background: #3a83a3;
+  color: white;
+}
+
+.identity-grid button.selected small,
+.course-grid > button.active small {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.identity-grid button.selected i {
+  background: var(--lime);
+  color: var(--ink);
+}
+
+.answer-list button.selected > span {
+  background: #2f7898;
+  color: white;
+}
+
+.primary-button:hover,
+.analyze-primary:hover {
+  background: #24657f;
+}
+
+.feature-scan {
+  background: #cfe8f3;
+  color: var(--ink);
+}
+
+.workflow-strip {
+  background: #d8edf6;
+  color: #496877;
+}
+
+.workflow-strip > span,
+.workflow-strip b {
+  color: #24708e;
+}
+
+.workflow-strip i {
+  background: rgba(35, 96, 121, 0.16);
+}
+
+.scan-aside,
+.score-panel,
+.scenario-rail,
+.coach-panel,
+.assistant-intro,
+.profile-aside,
+.challenge-rail,
+.result-score,
+.course-detail,
+.challenge-summary-card,
+.global-footer {
+  background: #d5ebf5;
+  color: var(--ink);
+}
+
+.login-visual {
+  background:
+    radial-gradient(circle at 88% 18%, rgba(121, 195, 225, 0.27), transparent 26%),
+    linear-gradient(rgba(218, 240, 249, 0.94), rgba(231, 246, 252, 0.98)),
+    repeating-linear-gradient(0deg, transparent 0 39px, rgba(35, 96, 121, 0.045) 40px),
+    repeating-linear-gradient(90deg, transparent 0 39px, rgba(35, 96, 121, 0.045) 40px);
+  color: var(--ink);
+}
+
+.login-brand small,
+.login-copy > p:last-child,
+.assistant-intro > p:not(.eyebrow),
+.score-panel > p,
+.scan-principles p,
+.practice-rules p,
+.coach-empty p,
+.profile-aside p,
+.challenge-rail > span,
+.challenge-rail > small,
+.challenge-rail > p,
+.result-score > span,
+.result-score > small,
+.course-detail-head p,
+.course-detail li p,
+.scan-stages li,
+.scan-stages li small {
+  color: var(--muted);
+}
+
+.aside-head,
+.panel-index,
+.score-meta span,
+.scan-stages li b,
+.scan-principles strong,
+.course-detail li span,
+.result-score > b,
+.scan-stages li.active b,
+.scan-stages li.done b {
+  color: #245f78;
+}
+
+.scan-stages li > span,
+.scan-stages li::after,
+.aside-head,
+.score-meta,
+.course-detail ol,
+.profile-aside > div {
+  border-color: rgba(36, 95, 120, 0.16);
+}
+
+.scan-stages li::after {
+  background: rgba(36, 95, 120, 0.14);
+}
+
+.scan-principles,
+.course-warning {
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.score-ring {
+  background:
+    radial-gradient(circle at center, #d5ebf5 61%, transparent 62%),
+    conic-gradient(var(--orange) 0 calc(var(--score) * 1%), rgba(36, 95, 120, 0.12) calc(var(--score) * 1%));
+}
+
+.score-meta {
+  border-top-color: rgba(36, 95, 120, 0.14);
+}
+
+.score-meta strong,
+.practice-cta,
+.course-detail .primary-button {
+  color: #1f6683;
+}
+
+.practice-cta {
+  border-color: rgba(36, 95, 120, 0.22);
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.scan-principles strong,
+.course-warning span,
+.result-score > b {
+  color: #276b86;
+}
+
+.scan-stages li.done > span {
+  color: var(--ink);
+}
+
+.scan-stages li.active > span,
+.risk-label {
+  color: #ad4632;
+}
+
+.rail-label,
+.scenario-rail > button,
+.coach-empty p,
+.assistant-boundaries div,
+.challenge-summary-card p {
+  color: var(--muted);
+}
+
+.scenario-rail > button.active {
+  background: rgba(255, 255, 255, 0.45);
+  color: var(--ink);
+}
+
+.practice-rules strong,
+.assistant-boundaries span,
+.profile-aside > span,
+.challenge-summary-card a,
+.coach-empty svg {
+  color: #246b89;
+}
+
+.coach-feedback > p {
+  background: rgba(255, 255, 255, 0.48);
+  color: var(--ink);
+}
+
+.coach-feedback > div {
+  border-top-color: rgba(36, 95, 120, 0.15);
+}
+
+.coach-feedback > div p {
+  color: var(--muted);
+}
+
+.assistant-boundaries div,
+.profile-aside > div {
+  border-color: rgba(36, 95, 120, 0.15);
+}
+
+.profile-aside > button {
+  border-color: rgba(35, 96, 121, 0.22);
+}
+
+.login-orbit,
+.login-orbit::before,
+.login-orbit::after {
+  border-color: rgba(35, 96, 121, 0.15);
+}
+
+.login-orbit span {
+  color: rgba(24, 55, 67, 0.36);
+}
+
+.global-footer {
+  color: #54717e;
+}
+
+.global-footer strong {
+  color: var(--ink);
+}
+
+.global-footer span,
+.global-footer p {
+  color: #5f7b87;
+}
+
+.assistant-message.user p,
+.chat-message.user p,
+.top-shell .profile-button .avatar {
+  background: #2f7898;
+}
+
+.top-shell .profile-button .avatar {
+  color: white;
+}
+
+.boot-screen {
+  background: #d9edf7;
+  color: var(--ink);
+}
+
+.boot-mark {
+  border-color: rgba(24, 55, 67, 0.3);
+  color: #286d8b;
+}
+
+.boot-screen p {
+  color: var(--muted);
 }
 
 @media (prefers-reduced-motion: reduce) {

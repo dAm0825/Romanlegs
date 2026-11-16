@@ -30,7 +30,7 @@
 
   const state = reactive({
     profile: read(storageKeys.profile, {
-      role: "在校学生",
+      role: "本科生",
       scenarios: ["兼职招聘", "二手交易"],
       cautionLevel: "标准",
       nickname: "同学",
@@ -44,6 +44,10 @@
     challengeHistory: read(storageKeys.challenges, []),
     toast: { visible: false, message: "", tone: "info" },
   });
+
+  if (state.profile.role === "在校学生") state.profile.role = "本科生";
+  if (state.profile.role === "研究生") state.profile.role = "研究生或博士生";
+  write(storageKeys.profile, state.profile);
 
   let toastTimer;
 
