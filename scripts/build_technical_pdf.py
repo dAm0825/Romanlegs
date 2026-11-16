@@ -251,11 +251,11 @@ class AgentFlow(Flowable):
     def draw(self):
         c = self.canv
         boxes = [
-            ("INPUT", "可疑消息"),
-            ("LOCAL", "脱敏 / 规则"),
-            ("RAG", "知识 / 案例"),
-            ("DEEPSEEK", "解释 / 演练"),
-            ("REVIEW", "安全复核"),
+            ("输入", "可疑消息"),
+            ("本地", "脱敏 / 规则"),
+            ("检索", "知识 / 案例"),
+            ("模型", "解释 / 演练"),
+            ("复核", "安全边界"),
         ]
         gap = 9
         box_w = (CONTENT - gap * (len(boxes) - 1)) / len(boxes)
@@ -277,7 +277,7 @@ class AgentFlow(Flowable):
         c.setFillColor(MUTED)
         c.setFont(BODY, 7)
         c.drawString(12, 45, "浏览器页面")
-        c.drawRightString(CONTENT - 12, 45, "报告 / 情景反馈 / AI 回答")
+        c.drawRightString(CONTENT - 12, 45, "报告 / 情景反馈 / 智能回答")
         c.line(CONTENT / 2, 104, CONTENT / 2, 74)
         c.line(CONTENT / 2, 74, CONTENT / 2, 56)
         c.line(CONTENT / 2 - 3, 61, CONTENT / 2, 56)
@@ -299,8 +299,8 @@ def cover(canvas, doc):
     canvas.circle(PAGE_W - 235, PAGE_H - 258, 5, fill=1, stroke=0)
     canvas.setFillColor(WHITE)
     canvas.setFont(BODY, 6.5)
-    canvas.drawString(LEFT, 18 * mm, "2026 CHUANZHI CUP · AI WEB CHALLENGE")
-    canvas.drawRightString(PAGE_W - RIGHT, 18 * mm, "TECHNICAL DESIGN / 01")
+    canvas.drawString(LEFT, 18 * mm, "2026 传智杯网页开发挑战赛")
+    canvas.drawRightString(PAGE_W - RIGHT, 18 * mm, "技术设计文档")
     canvas.restoreState()
 
 
@@ -312,10 +312,10 @@ def body_page(canvas, doc):
     canvas.line(LEFT, PAGE_H - 13 * mm, PAGE_W - RIGHT, PAGE_H - 13 * mm)
     canvas.setFillColor(MUTED)
     canvas.setFont(BODY, 6.2)
-    canvas.drawString(LEFT, PAGE_H - 17 * mm, "明辨 · AI 校园反诈陪练")
-    canvas.drawRightString(PAGE_W - RIGHT, PAGE_H - 17 * mm, "TECHNICAL DESIGN")
+    canvas.drawString(LEFT, PAGE_H - 17 * mm, "明辨 · 校园反诈陪练")
+    canvas.drawRightString(PAGE_W - RIGHT, PAGE_H - 17 * mm, "技术设计")
     canvas.line(LEFT, 13 * mm, PAGE_W - RIGHT, 13 * mm)
-    canvas.drawString(LEFT, 8.5 * mm, "AI-NATIVE ANTI-FRAUD TRAINING")
+    canvas.drawString(LEFT, 8.5 * mm, "校园反诈训练")
     canvas.drawRightString(PAGE_W - RIGHT, 8.5 * mm, f"{canvas.getPageNumber():02d}")
     canvas.restoreState()
 
@@ -325,19 +325,19 @@ def story() -> list:
         Spacer(1, 28 * mm),
         Mark(),
         Spacer(1, 14 * mm),
-        p("MINGBIAN / 明辨", "MB-Eyebrow"),
+        p("项目技术文档", "MB-Eyebrow"),
         p("识破一次，<br/>才能真正学会拒绝。", "MB-Cover"),
         p(
-            "面向大学生的 AI 反诈陪练。<br/>"
-            "从可疑消息检测，到压力情景演练，再到真实新闻证据与 AI 助手。",
+            "面向大学生的校园反诈陪练。<br/>"
+            "从可疑消息检测，到压力情景演练，再到真实新闻证据与智能助手。",
             "MB-Cover-Sub",
         ),
         Spacer(1, 35 * mm),
         table(
             [
                 ["01", "02", "03"],
-                ["VUE ROUTER", "GROUNDED AI", "REAL NEWS"],
-                ["多页面结构", "规则 + RAG + 安全复核", "公开案例直达原文"],
+                ["多页面结构", "可追溯智能", "真实新闻"],
+                ["独立任务页面", "规则 + 检索 + 安全复核", "公开案例直达原文"],
             ],
             [CONTENT / 3] * 3,
         ),
@@ -352,7 +352,7 @@ def story() -> list:
             "普通宣传页通常只展示警示口号，用户看懂之后仍可能在对方持续施压时作出错误操作。"
         ),
         p(
-            "明辨把完整过程拆为：设置安全档案、检测可疑消息、阅读风险与证据、进入同类情景演练、查看成长记录、随时咨询 AI 助手。"
+            "明辨把完整过程拆为：设置安全档案、检测可疑消息、阅读风险与证据、进入同类情景演练、查看成长记录、随时咨询智能助手。"
             "每个任务都由独立路由承载，避免把所有功能堆在首页。",
         ),
         table(
@@ -361,7 +361,7 @@ def story() -> list:
                 ["/", "建立产品认知", "选择检测或演练入口"],
                 ["/scan", "粘贴可疑消息", "触发风险检测"],
                 ["/report/:id", "查看独立报告", "理解信号、证据和行动"],
-                ["/practice", "AI 压力对话", "练习拒绝与核验"],
+                ["/practice", "压力对话演练", "练习拒绝与核验"],
                 ["/cases", "阅读真实案例", "点击进入新闻原文"],
                 ["/dashboard", "查看成长记录", "识别薄弱风险类型"],
                 ["/assistant", "连续咨询", "获得带来源的安全回答"],
@@ -380,7 +380,7 @@ def story() -> list:
         AgentFlow(),
         p("图 2-1 从输入到安全复核的请求链路", "MB-Caption"),
         p(
-            "本地规则先完成敏感信息处理和稳定风险命中，DeepSeek 再在此基础上生成解释、角色扮演或问答。"
+            "本地规则先完成敏感信息处理和稳定风险命中，智能模型再在此基础上生成解释、角色扮演或问答。"
             "这一分工可以降低模型漏判，也避免网络波动导致演示完全不可用。",
             "MB-Quote",
         ),
@@ -435,10 +435,10 @@ def story() -> list:
     ]
 
     content += [
-        *block("05 情景演练", "AI 才不是答题器，它要制造可控制的压力。"),
+        *block("05 情景演练", "智能模型不是答题器，它要制造可控制的压力。"),
         *shot("practice.png", "图 5-1 情景、聊天与即时复盘三栏工作台", CONTENT - 5),
         p(
-            "用户选择兼职、客服或奖学金场景后，AI 以虚构诈骗角色持续施压。每次回复后，系统给出风险反馈、"
+            "用户选择兼职、客服或奖学金场景后，智能模型以虚构诈骗角色持续施压。每次回复后，系统给出风险反馈、"
             "更安全的表达和安全分变化。场景禁止使用真实账户、电话或可执行诈骗资源。",
         ),
         table(
@@ -454,10 +454,10 @@ def story() -> list:
     ]
 
     content += [
-        *block("06 AI 助手与 RAG", "正式聊天入口独立存在，也能说明自己依据了什么。"),
-        *shot("assistant.png", "图 6-1 独立 AI 助手页面与来源展示", CONTENT - 5),
+        *block("06 智能助手与知识检索", "正式聊天入口独立存在，也能说明自己依据了什么。"),
+        *shot("assistant.png", "图 6-1 独立智能助手页面与来源展示", CONTENT - 5),
         p(
-            "AI 助手收到问题后，先从本地知识和新闻案例中检索相关内容，再要求模型在给定资料范围内回答。"
+            "智能助手收到问题后，先从本地知识和新闻案例中检索相关内容，再要求模型在给定资料范围内回答。"
             "前端会同时展示命中的知识条目和可点击新闻案例，用户可以看到回答从哪里来。",
         ),
         p(
@@ -472,7 +472,7 @@ def story() -> list:
         *block("07 账户与训练模块", "登录不是装饰页，它会保护成长数据和训练结果。"),
         *shot("login.png", "图 7-1 登录、注册与本地体验账户", CONTENT - 5),
         p(
-            "账户模块支持登录、注册和体验模式。密码使用 Web Crypto 进行加盐 SHA-256 哈希后保存在 localStorage，"
+            "账户模块支持登录、注册和体验模式。密码使用浏览器加密接口进行加盐哈希后保存在当前浏览器，"
             "原始密码不会写入本地数据或发送到服务器。成长记录、安全档案和每日挑战受路由守卫保护，"
             "登录成功后会回到用户原本访问的页面。",
         ),
@@ -517,7 +517,7 @@ def story() -> list:
                 ["冒充公检法场景识别", "通过"],
                 ["真实新闻案例返回", "通过"],
                 ["手机号、邮箱和证件号脱敏", "通过"],
-                ["AI 助手本地知识回答", "通过"],
+                ["智能助手本地知识回答", "通过"],
                 ["危险演练回复负向评分", "通过"],
                 ["防御性演练回复正向评分", "通过"],
             ["挑战题不泄漏正确答案", "通过"],
@@ -533,7 +533,7 @@ def story() -> list:
             "MB-Quote",
         ),
         p(
-            "Vue 和 Vue Router 已放入 `app/vendor`，运行网站不依赖外部 CDN。DeepSeek 仅用于服务端 API 调用。",
+            "前端框架运行库已放入项目目录，运行网站不依赖外部资源站点。智能模型仅通过服务端接口调用。",
         ),
         p("后续部署", "MB-H2"),
         p(
@@ -546,8 +546,8 @@ def story() -> list:
     content += [
         *block("11 创新点与社会价值"),
         p("技术创新", "MB-H2"),
-        p("- 规则引擎与 DeepSeek 双通道识别，结构化风险不依赖模型随机发挥。"),
-        p("- RAG 知识与公开新闻案例共同支撑助手回答。"),
+        p("- 规则引擎与智能模型双通道识别，结构化风险不依赖模型随机发挥。"),
+        p("- 本地知识与公开新闻案例共同支撑助手回答。"),
         p("- 可交互情景演练让用户从“看懂”进入“练会”。"),
         p("- 确定性安全评分复核，纠正模型对防御性表达的误判。"),
         p("应用创新", "MB-H2"),
@@ -560,9 +560,9 @@ def story() -> list:
             "MB-Quote",
         ),
         Spacer(1, 20),
-        p("明辨 · AI 校园反诈陪练", "MB-H2"),
+        p("明辨 · 校园反诈陪练", "MB-H2"),
         p(
-            "2026 传智杯 AI Web 网页开发挑战赛参赛项目。"
+            "2026 传智杯网页开发挑战赛参赛项目。"
             "本应用用于风险教育，不替代警方、银行或法律专业机构的正式结论。",
             "MB-Small",
         ),
@@ -578,8 +578,8 @@ def build():
         rightMargin=RIGHT,
         topMargin=20 * mm,
         bottomMargin=18 * mm,
-        title="明辨 AI 校园反诈陪练技术文档",
-        subject="2026 传智杯 AI Web 网页开发挑战赛",
+        title="明辨校园反诈陪练技术文档",
+        subject="2026 传智杯网页开发挑战赛",
         author="dAm0825",
     )
     cover_frame = Frame(LEFT, 18 * mm, CONTENT, PAGE_H - 36 * mm)
