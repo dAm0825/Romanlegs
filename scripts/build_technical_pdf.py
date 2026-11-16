@@ -155,10 +155,32 @@ styles.add(
     ParagraphStyle(
         "MB-Cover",
         fontName=DISPLAY,
-        fontSize=39,
-        leading=48,
+        fontSize=36,
+        leading=44,
         textColor=INK,
-        spaceAfter=17,
+        spaceAfter=4,
+        wordWrap="CJK",
+    )
+)
+styles.add(
+    ParagraphStyle(
+        "MB-Cover-Doc",
+        fontName=DISPLAY,
+        fontSize=23,
+        leading=31,
+        textColor=BLUE,
+        spaceAfter=14,
+        wordWrap="CJK",
+    )
+)
+styles.add(
+    ParagraphStyle(
+        "MB-Cover-Slogan",
+        fontName=DISPLAY,
+        fontSize=19,
+        leading=28,
+        textColor=DEEP_BLUE,
+        spaceAfter=14,
         wordWrap="CJK",
     )
 )
@@ -166,8 +188,8 @@ styles.add(
     ParagraphStyle(
         "MB-Cover-Sub",
         fontName=BODY,
-        fontSize=11,
-        leading=19,
+        fontSize=10.5,
+        leading=18,
         textColor=MUTED,
         wordWrap="CJK",
     )
@@ -335,8 +357,10 @@ def story() -> list:
         Spacer(1, 28 * mm),
         Mark(),
         Spacer(1, 14 * mm),
-        p("智能反诈训练系统 · 项目技术文档", "MB-Eyebrow"),
-        p("识破一次，<br/>才能真正学会拒绝。", "MB-Cover"),
+        p("2026 传智杯网页开发挑战赛", "MB-Eyebrow"),
+        p("智能反诈训练系统", "MB-Cover"),
+        p("项目技术文档", "MB-Cover-Doc"),
+        p("识破一次，才能真正学会拒绝。", "MB-Cover-Slogan"),
         p(
             "面向大学生的校园反诈陪练。<br/>"
             "从可疑消息检测，到压力情景演练，再到真实新闻证据与智能助手。",
