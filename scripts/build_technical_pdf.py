@@ -72,8 +72,8 @@ styles.add(
     ParagraphStyle(
         "MB-Body",
         fontName=BODY,
-        fontSize=9,
-        leading=15.5,
+        fontSize=10,
+        leading=17,
         textColor=INK,
         spaceAfter=7,
         wordWrap="CJK",
@@ -83,8 +83,8 @@ styles.add(
     ParagraphStyle(
         "MB-Small",
         fontName=BODY,
-        fontSize=7.3,
-        leading=11,
+        fontSize=8.2,
+        leading=12.5,
         textColor=MUTED,
         wordWrap="CJK",
     )
@@ -93,8 +93,8 @@ styles.add(
     ParagraphStyle(
         "MB-Eyebrow",
         fontName=BODY,
-        fontSize=7,
-        leading=10,
+        fontSize=7.8,
+        leading=11,
         textColor=ORANGE,
         tracking=1.1,
         spaceAfter=7,
@@ -143,8 +143,8 @@ styles.add(
     ParagraphStyle(
         "MB-Caption",
         fontName=BODY,
-        fontSize=7,
-        leading=10,
+        fontSize=7.8,
+        leading=11,
         textColor=MUTED,
         alignment=TA_CENTER,
         spaceBefore=4,
@@ -413,7 +413,7 @@ def story() -> list:
             "安全设计、测试结果与部署方式，并配合关键页面截图展示实际实现。"
         ),
         Spacer(1, 4 * mm),
-        p("参赛单位：西安交通大学　参赛团队：romansleg 组", "MB-Small"),
+        p("参赛单位：西安交通大学　参赛团队：Romansleg 组", "MB-Small"),
         Spacer(1, 10 * mm),
         table(
             [
@@ -915,7 +915,7 @@ def build():
         bottomMargin=18 * mm,
         title="智能反诈训练系统技术文档",
         subject="2026 传智杯网页开发挑战赛",
-        author="西安交通大学 romansleg 组",
+        author="西安交通大学 Romansleg 组",
     )
     cover_frame = Frame(LEFT, 18 * mm, CONTENT, PAGE_H - 36 * mm)
     body_frame = Frame(LEFT, 20 * mm, CONTENT, PAGE_H - 43 * mm)
