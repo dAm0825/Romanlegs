@@ -4,7 +4,7 @@
 
 智能反诈训练系统是一款面向大学生的反诈训练 Web 应用。它不是一张把全部功能堆在一起的长页面，而是一个基于 **Vue 3 + Vue Router** 的多路由应用，将风险检测、报告阅读、情景演练、真实案例、成长记录和智能助手拆成独立页面。
 
-技术文档：[MingBian-technical-document.pdf](docs/MingBian-technical-document.pdf)
+作品介绍与技术文档：[MingBian-technical-document.pdf](docs/MingBian-technical-document.pdf)
 
 演示视频脚本：[demo-script.md](docs/demo-script.md)
 
